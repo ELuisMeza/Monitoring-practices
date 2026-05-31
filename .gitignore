@@ -44,5 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# SQLite local (generado por bin/migrate.dart en desarrollo)
+# SQLite local
+/data/
 following_practices.db

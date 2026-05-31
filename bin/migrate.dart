@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:following_practices/back/database/database_constants.dart';
+import 'package:following_practices/back/database/database_path_cli.dart';
 import 'package:following_practices/back/database/migrations/migration_runner.dart';
-import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-/// Comando CLI para crear/actualizar el esquema de la base de datos.
+/// Único punto para crear/actualizar el esquema de la base de datos.
+///
+/// Las migraciones NO se ejecutan al iniciar la app; solo con este script.
 ///
 /// Uso:
 ///   dart run bin/migrate.dart
@@ -15,14 +17,7 @@ Future<void> main(List<String> args) async {
   databaseFactory = databaseFactoryFfi;
 
   final customPath = _readPathArg(args);
-  final dbPath = customPath ?? p.join(Directory.current.path, DatabaseConstants.dbName);
-
-  if (customPath == null) {
-    final dir = Directory(p.dirname(dbPath));
-    if (!dir.existsSync()) {
-      dir.createSync(recursive: true);
-    }
-  }
+  final dbPath = DatabasePathCli.resolve(override: customPath);
 
   stdout.writeln('Ejecutando migraciones en: $dbPath');
 
