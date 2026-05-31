@@ -9,62 +9,198 @@ Usa **SQLite** como base de datos local offline y una arquitectura **front / bac
 
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (^3.12)
 - Dart ^3.12
-- Dispositivo/emulador o Windows desktop para ejecutar la app
+- **Windows / Linux / macOS** para desarrollo desktop, o **Android Studio** + emulador
+- [DB Browser for SQLite](https://sqlitebrowser.org/) (opcional, para inspeccionar la BD)
+- PowerShell (Windows) para los scripts de sincronización del emulador
+
+Verificar instalación:
+
+```bash
+flutter doctor
+flutter devices
+```
 
 ---
 
-## Comandos necesarios
+## Inicio rápido
 
-### 1. Instalar dependencias
+### 1. Clonar e instalar dependencias
 
 ```bash
+cd following_practices
 flutter pub get
 ```
 
-### 2. Crear / actualizar la base de datos (obligatorio antes de usar la app)
+### 2. Crear la base de datos (obligatorio)
 
-Las migraciones **solo** se ejecutan con el script. La app **no** migra automáticamente al iniciar.
+Las migraciones **solo** se ejecutan con el script CLI. La app **no** migra automáticamente al iniciar (excepto la pantalla de prueba CRUD en debug).
 
 ```bash
 dart run bin/migrate.dart
 ```
 
-Con ruta personalizada:
+Esto crea: `data/following_practices.db`
+
+### 3. Levantar la app
+
+Elige **una** de las dos opciones según dónde quieras probar:
+
+#### Opción A — Windows desktop 
+
+La app lee y escribe **directamente** `data/following_practices.db`. No hay sincronización.
 
 ```bash
-dart run bin/migrate.dart --path ./data/following_practices.db
+flutter run -d windows
 ```
 
-Por defecto crea: `{proyecto}/data/following_practices.db`
+Ideal para: desarrollo rápido, DB Browser, y ver cambios al instante en el mismo archivo.
 
-### 3. Ejecutar la app
+#### Opción B — Emulador Android (con sincronización automática)
 
-```bash
-flutter run
+El emulador usa su propio almacenamiento interno. Los scripts copian la BD del PC al emulador al iniciar, y la traen de vuelta al salir.
+
+```powershell
+# Windows PowerShell — desde la raíz del proyecto
+.\bin\run_emulator.ps1
 ```
 
-En un dispositivo concreto:
+Con emulador concreto (si hay varios):
 
-```bash
+```powershell
 flutter devices
-flutter run -d <device_id>
+.\bin\run_emulator.ps1 -Device emulator-5554
 ```
 
-### 4. Análisis estático
+**Salir correctamente:** en la terminal de Flutter escribe `q` y Enter. El script guardará la BD en `data/following_practices.db`.
+
+Si el pull automático falla (emulador apagado, DB Browser abierto):
+
+```powershell
+.\bin\sync_db_emulator.ps1 pull -Device emulator-5554
+```
+
+---
+
+## Cómo funciona la base de datos
+
+### Archivo canónico
+
+Todos los devs deben usar **un solo archivo** en el repositorio local:
+
+```
+proyecto/data/following_practices.db
+```
+
+### Dónde escribe cada entorno
+
+| Contexto | Archivo que usa | ¿Sync manual? |
+|----------|-----------------|---------------|
+| CLI (`migrate.dart`) | `data/following_practices.db` | No |
+| App Windows / Linux / macOS | `data/following_practices.db` | No |
+| Emulador Android (debug) | Almacenamiento interno de la app | Sí, vía scripts |
+
+### Flujo en emulador Android
+
+```
+PC: data/following_practices.db
+        │
+        │  push (run_emulator.ps1 al iniciar)
+        ▼
+Emulador: /data/local/tmp/ → copia interna app_flutter/data/
+        │
+        │  app lee/escribe en carpeta interna (writable)
+        ▼
+        │  pull (run_emulator.ps1 al salir)
+        ▼
+PC: data/following_practices.db  (actualizado)
+```
+
+Scripts disponibles en `bin/`:
+
+| Script | Uso |
+|--------|-----|
+| `migrate.dart` | Crear/actualizar esquema en el PC |
+| `run_emulator.ps1` | Push + `flutter run` + pull automático |
+| `sync_db_emulator.ps1 push` | Enviar BD del PC al emulador |
+| `sync_db_emulator.ps1 pull` | Traer BD del emulador al PC |
+
+Ejemplo manual (sin `run_emulator.ps1`):
+
+```powershell
+dart run bin/migrate.dart
+.\bin\sync_db_emulator.ps1 push -Device emulator-5554
+flutter run -d emulator-5554
+# ... probar ...
+.\bin\sync_db_emulator.ps1 pull -Device emulator-5554
+```
+
+### Inspeccionar la BD
+
+1. Cierra DB Browser si está abierto.
+2. Si usaste emulador, asegúrate de haber hecho pull (o salido con `q` desde `run_emulator.ps1`).
+3. Abre `data/following_practices.db` en [DB Browser for SQLite](https://sqlitebrowser.org/).
+
+```sql
+SELECT * FROM usuarios;
+```
+
+---
+
+## Pantalla de prueba CRUD (solo desarrollo)
+
+Para verificar conexión SQLite y probar todas las tablas:
+
+1. Levanta la app (Windows o emulador).
+2. En la pantalla principal, pulsa el icono de **base de datos** (AppBar).
+3. Usa las pestañas para crear/editar/eliminar registros.
+
+Orden sugerido por claves foráneas: **Usuarios → Empresas → Prácticas → Actividades → Observaciones → Asistencias**.
+
+La pantalla muestra la ruta de BD activa y aplica migraciones pendientes en debug.
+
+Archivos:
+
+- `lib/back/services/crud_test_service.dart`
+- `lib/front/pages/crud_test_page.dart`
+
+---
+
+## Comandos de desarrollo
+
+### Análisis estático
 
 ```bash
 dart analyze lib
 ```
 
-### 5. Tests
+### Tests
 
 ```bash
 flutter test
 ```
 
+### Migración con ruta personalizada
+
+```bash
+dart run bin/migrate.dart --path ./data/following_practices.db
+```
+
 ---
 
-## Base de datos
+## Solución de problemas
+
+| Problema | Solución |
+|----------|----------|
+| `device 'e' not found` | Actualiza scripts (`git pull`) o usa `-Device emulator-5554` |
+| App atascada en logo Flutter | BD readonly; usa `run_emulator.ps1` (no `flutter run` solo) |
+| Pull falla al salir | Cierra DB Browser, emulador encendido, ejecuta `sync_db_emulator.ps1 pull` |
+| Varios emuladores | `flutter devices` + `run_emulator.ps1 -Device <id>` |
+| `Sin práctica activa` en home | Normal si no hay práctica activa; usa CRUD para poblar datos |
+| `no such table` | Ejecuta `dart run bin/migrate.dart` y vuelve a hacer push |
+
+---
+
+## Base de datos (referencia)
 
 
 | Recurso | Ubicación |
@@ -72,6 +208,7 @@ flutter test
 | Definición SQL de tablas | `lib/back/database/schema/initial_schema.dart` |
 | Migraciones versionadas | `lib/back/database/migrations/` |
 | Script de migración | `bin/migrate.dart` |
+| Sync emulador | `bin/run_emulator.ps1`, `bin/sync_db_emulator.ps1` |
 
 ### Tablas
 
@@ -82,20 +219,6 @@ flutter test
 - `observaciones` — comentarios de revisión
 - `asistencias` — entradas/salidas por QR
 - `schema_migrations` — control interno de migraciones aplicadas
-
-### Ubicación del archivo `.db`
-
-Regla unificada: `{directorio_base}/data/following_practices.db`
-
-| Contexto | Ruta |
-|----------|------|
-| Script CLI (PC) | `proyecto/data/following_practices.db` |
-| App en emulador/móvil | almacenamiento interno de la app + `data/following_practices.db` |
-| App en desktop | carpeta de soporte de la app + `data/following_practices.db` |
-
-### Ver la base de datos
-
-Instalar [DB Browser for SQLite](https://sqlitebrowser.org/) y abrir el archivo `.db` generado.
 
 ---
 
@@ -120,6 +243,8 @@ lib/
     │   ├── database_factory.dart     # Singleton del cliente
     │   ├── database_path.dart        # Ruta BD (app)
     │   ├── database_path_cli.dart    # Ruta BD (script)
+    │   ├── database_path_core.dart   # Lógica compartida de rutas
+    │   ├── database_sync.dart        # Import BD tmp → app (Android debug)
     │   ├── schema/
     │   └── migrations/
     ├── entities/                     # Tablas SQLite + CRUD
@@ -128,7 +253,9 @@ lib/
     └── validators/                   # Validación de datos del front
 
 bin/
-└── migrate.dart                      # Único comando de migración
+├── migrate.dart                      # Crear/actualizar esquema (CLI)
+├── run_emulator.ps1                  # Levantar app en emulador + sync BD
+└── sync_db_emulator.ps1              # Push/pull manual de la BD
 
 data/
 └── following_practices.db            # BD local (generada, no commitear)

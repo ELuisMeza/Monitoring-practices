@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:following_practices/back/dtos/resumen_horas_semanal_dto.dart';
+import 'package:following_practices/front/pages/crud_test_page.dart';
 import 'package:following_practices/front/services/actividad_service.dart';
 
 /// Pantalla principal — consume directamente `front/services`.
@@ -55,6 +56,19 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Seguimiento de Prácticas'),
+        actions: [
+          IconButton(
+            tooltip: 'CRUD prueba BD',
+            icon: const Icon(Icons.storage),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const CrudTestPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: _buildBody(),
     );

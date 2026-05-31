@@ -1,36 +1,36 @@
 import 'dart:io';
 
-import 'package:following_practices/back/database/database_constants.dart';
-import 'package:path/path.dart' as p;
+import 'package:following_practices/back/database/database_path_core.dart';
 import 'package:path_provider/path_provider.dart';
 
-/// Ruta de la BD para la app Flutter (emulador, móvil, desktop).
+/// Ruta de la BD para la app Flutter.
 ///
-/// Regla única: `{directorio_app}/data/following_practices.db`
+/// Regla: `{directorio_app}/data/following_practices.db`
+/// - Windows / Linux / macOS: `{proyecto}/data/following_practices.db`
+/// - Android / iOS: almacenamiento interno + `data/`
+///   (en debug, importar desde `/data/local/tmp/` vía [DatabaseSync]).
 class DatabasePath {
   DatabasePath._();
 
   static Future<String> resolve({String? override}) async {
     if (override != null && override.isNotEmpty) return override;
 
-    final base = await _baseDirectory();
-    return _buildPath(base);
+    const fromEnv = String.fromEnvironment('DB_PATH');
+    if (fromEnv.isNotEmpty) return fromEnv;
+
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      final projectPath = DatabasePathCore.resolveProjectDatabasePath();
+      if (projectPath != null) return projectPath;
+    }
+
+    final base = await _mobileBaseDirectory();
+    return DatabasePathCore.buildPath(base.path);
   }
 
-  static Future<Directory> _baseDirectory() async {
+  static Future<Directory> _mobileBaseDirectory() async {
     if (Platform.isAndroid || Platform.isIOS) {
       return getApplicationDocumentsDirectory();
     }
     return getApplicationSupportDirectory();
-  }
-
-  static String _buildPath(Directory base) {
-    final dataDir = Directory(
-      p.join(base.path, DatabaseConstants.storageDir),
-    );
-    if (!dataDir.existsSync()) {
-      dataDir.createSync(recursive: true);
-    }
-    return p.join(dataDir.path, DatabaseConstants.dbName);
   }
 }
