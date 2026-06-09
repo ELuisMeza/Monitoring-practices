@@ -1,30 +1,35 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:following_practices/main.dart';
+import 'package:following_practices/back/database/database_factory.dart';
+import 'package:following_practices/back/database/migrations/migration_runner.dart';
+import 'package:following_practices/front/lib/app.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' hide DatabaseFactory;
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() async {
+    await DatabaseFactory.reset();
+    await DatabaseFactory.apiClient.initialize(databasePath: ':memory:');
+    await MigrationRunner.run(DatabaseFactory.apiClient.database);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  tearDown(() async {
+    await DatabaseFactory.reset();
+  });
+
+  testWidgets('muestra la pantalla principal', (WidgetTester tester) async {
+    await tester.pumpWidget(const FollowingPracticesApp());
+
+    expect(find.text('Seguimiento de Prácticas'), findsOneWidget);
+
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Sin práctica activa.'), findsOneWidget);
   });
 }
