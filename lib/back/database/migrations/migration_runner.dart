@@ -1,6 +1,10 @@
 import 'package:following_practices/back/database/database_constants.dart';
 import 'package:following_practices/back/database/migrations/migration.dart';
 import 'package:following_practices/back/database/migrations/migration_001_initial.dart';
+import 'package:following_practices/back/database/migrations/migration_002_alertas_historial.dart';
+import 'package:following_practices/back/database/migrations/migration_003_seed_demo.dart';
+import 'package:following_practices/back/database/migrations/migration_004_ensure_demo_users.dart';
+import 'package:following_practices/back/database/migrations/migration_005_supervisor_empresa.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
 /// Ejecuta migraciones pendientes en orden ascendente de versión.
@@ -9,6 +13,10 @@ class MigrationRunner {
 
   static final List<Migration> _migrations = [
     Migration001Initial(),
+    Migration002AlertasHistorial(),
+    Migration003SeedDemo(),
+    Migration004EnsureDemoUsers(),
+    Migration005SupervisorEmpresa(),
   ];
 
   static Future<List<int>> run(Database db) async {

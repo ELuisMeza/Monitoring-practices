@@ -88,4 +88,26 @@ class Asistencia {
     }
     return EntityDatabase.deleteById(tableName, id!);
   }
+
+  static Future<List<Asistencia>> readByPracticaFecha(
+    int practicaId,
+    String fecha,
+  ) {
+    return readAll(
+      where: 'practica_id = ? AND fecha = ?',
+      whereArgs: [practicaId, fecha],
+      orderBy: 'hora ASC',
+    );
+  }
+
+  static Future<List<Asistencia>> readByEmpresaFecha(
+    int empresaId,
+    String fecha,
+  ) {
+    return readAll(
+      where: 'empresa_id = ? AND fecha = ?',
+      whereArgs: [empresaId, fecha],
+      orderBy: 'hora ASC',
+    );
+  }
 }

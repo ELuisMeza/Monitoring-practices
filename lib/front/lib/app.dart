@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:following_practices/front/lib/router.dart';
 import 'package:following_practices/front/lib/theme/app_theme.dart';
-import 'package:following_practices/front/pages/home_page.dart';
 
 /// Raíz de la aplicación móvil (configuración global del front).
 class FollowingPracticesApp extends StatelessWidget {
@@ -8,10 +8,10 @@ class FollowingPracticesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Seguimiento de Prácticas',
       theme: AppTheme.light,
-      home: const HomePage(),
+      routerConfig: AppRouter.router,
     );
   }
 }

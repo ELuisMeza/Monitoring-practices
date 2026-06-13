@@ -6,7 +6,7 @@ class DatabaseConstants {
   static const String storageDir = 'data';
 
   static const String dbName = 'following_practices.db';
-  static const int dbVersion = 1;
+  static const int dbVersion = 5;
 
   static const String tableSchemaMigrations = 'schema_migrations';
 }

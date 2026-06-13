@@ -212,7 +212,7 @@ dart run bin/migrate.dart --path ./data/following_practices.db
 
 ### Tablas
 
-- `usuarios` — estudiantes, tutores, supervisores, coordinadores
+- `usuarios` — estudiantes, tutores, supervisores (`empresa_id`), coordinadores
 - `empresas` — empresas con `qr_token` para asistencia
 - `practicas` — vínculo estudiante ↔ empresa
 - `actividades` — registro diario de actividades
@@ -333,6 +333,65 @@ Mapeo SQLite ↔ Dart:
 2. Registrarla en `migration_runner.dart`
 3. Incrementar `dbVersion` en `database_constants.dart`
 4. Ejecutar: `dart run bin/migrate.dart`
+
+---
+
+## Alcance MVP y reglas de negocio
+
+### Roles y permisos
+
+| Rol | Puede hacer |
+|-----|-------------|
+| **Estudiante** | Registrar actividades, ver historial, escanear QR de asistencia, ver reporte semanal y progreso de horas. |
+| **Tutor** | Revisar actividades de sus practicantes (`practicas.tutor_id`), observar/aprobar/rechazar con comentario. |
+| **Supervisor** | Validar actividades de **todas las prácticas activas de su empresa** (`usuarios.empresa_id`), ver asistencias del día de esa empresa. |
+| **Coordinador** | Dashboard global, listar prácticas y **CRUD completo** de usuarios, empresas y prácticas (asignaciones tutor/supervisor). |
+
+### Estados de actividad
+
+| Estado | Significado | Transiciones permitidas |
+|--------|-------------|-------------------------|
+| `registrado` | Creado por el estudiante | → `observado`, `aprobado`, `rechazado` |
+| `observado` | Revisado con comentario, pendiente de decisión | → `aprobado`, `rechazado` |
+| `aprobado` | Validado por tutor/supervisor | Final |
+| `rechazado` | Rechazado con observación | Final |
+
+Solo actividades en `registrado` pueden editarse o eliminarse por el estudiante.
+
+### Reglas de asistencia QR
+
+1. El QR contiene el `qr_token` de la empresa.
+2. El estudiante debe tener práctica **activa** en esa empresa.
+3. Secuencia del día: **entrada** → **salida** (no doble entrada ni salida sin entrada previa).
+4. Una asistencia por tipo (`entrada`/`salida`) por día y práctica.
+
+### Reglas de horas
+
+- Cada actividad registra `horas_cumplidas` > 0.
+- **Horas semanales**: suma de actividades en los últimos 7 días.
+- **Horas acumuladas**: suma total de actividades de la práctica activa vs `horas_requeridas`.
+
+### Criterios de aceptación MVP
+
+| Flujo | Criterio |
+|-------|----------|
+| Login | Usuario inicia sesión por email/contraseña y se redirige según rol. |
+| Registro actividad | Estudiante crea actividad ligada a práctica activa con estado `registrado`. |
+| Revisión | Tutor/supervisor cambia estado y deja observación visible en detalle. |
+| QR asistencia | Escaneo válido registra entrada/salida con reglas de secuencia. |
+| Reporte semanal | Muestra total horas, cantidad de actividades y rango de fechas. |
+| Coordinador | Dashboard con totales de prácticas activas y horas acumuladas. |
+
+### Datos demo (migraciones 002–005)
+
+La migración **005** asigna `empresa_id` a supervisores existentes. El supervisor demo queda vinculado a **Tech Solutions SAC** y ve todas las prácticas activas de esa empresa.
+
+| Email | Contraseña | Rol |
+|-------|------------|-----|
+| `estudiante@demo.com` | `123456` | estudiante |
+| `tutor@demo.com` | `123456` | tutor |
+| `supervisor@demo.com` | `123456` | supervisor |
+| `coord@demo.com` | `123456` | coordinador |
 
 ---
 
