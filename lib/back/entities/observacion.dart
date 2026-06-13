@@ -77,4 +77,12 @@ class Observacion {
     }
     return EntityDatabase.deleteById(tableName, id!);
   }
+
+  static Future<List<Observacion>> readByActividadId(int actividadId) {
+    return readAll(
+      where: 'actividad_id = ?',
+      whereArgs: [actividadId],
+      orderBy: 'created_at ASC',
+    );
+  }
 }

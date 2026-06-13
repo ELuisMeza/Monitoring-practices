@@ -9,6 +9,7 @@ class Usuario {
     required this.passwordHash,
     required this.rol,
     this.telefono,
+    this.empresaId,
     this.createdAt,
   });
 
@@ -25,6 +26,7 @@ class Usuario {
   final String passwordHash;
   final String rol;
   final String? telefono;
+  final int? empresaId;
   final String? createdAt;
 
   factory Usuario.fromMap(Map<String, dynamic> map) {
@@ -35,6 +37,7 @@ class Usuario {
       passwordHash: map['password_hash'] as String,
       rol: map['rol'] as String,
       telefono: map['telefono'] as String?,
+      empresaId: map['empresa_id'] as int?,
       createdAt: map['created_at'] as String?,
     );
   }
@@ -47,6 +50,7 @@ class Usuario {
       'password_hash': passwordHash,
       'rol': rol,
       'telefono': telefono,
+      'empresa_id': empresaId,
       if (createdAt != null) 'created_at': createdAt,
     };
   }
@@ -89,5 +93,22 @@ class Usuario {
       throw StateError('No se puede eliminar un usuario sin id.');
     }
     return EntityDatabase.deleteById(tableName, id!);
+  }
+
+  static Future<List<Usuario>> readByRol(String rol) {
+    return readAll(
+      where: 'rol = ?',
+      whereArgs: [rol],
+      orderBy: 'nombre ASC',
+    );
+  }
+
+  static Future<Usuario?> readByEmail(String email) async {
+    final usuarios = await readAll(
+      where: 'email = ?',
+      whereArgs: [email.trim().toLowerCase()],
+      limit: 1,
+    );
+    return usuarios.isEmpty ? null : usuarios.first;
   }
 }

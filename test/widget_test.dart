@@ -1,35 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:following_practices/back/database/database_factory.dart';
-import 'package:following_practices/back/database/migrations/migration_runner.dart';
 import 'package:following_practices/front/lib/app.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart' hide DatabaseFactory;
+import 'helpers/test_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   setUpAll(() {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
+    SharedPreferences.setMockInitialValues({});
   });
 
-  setUp(() async {
-    await DatabaseFactory.reset();
-    await DatabaseFactory.apiClient.initialize(databasePath: ':memory:');
-    await MigrationRunner.run(DatabaseFactory.apiClient.database);
-  });
+  setUp(() async => setupTestDatabase());
+  tearDown(() async => tearDownTestDatabase());
 
-  tearDown(() async {
-    await DatabaseFactory.reset();
-  });
-
-  testWidgets('muestra la pantalla principal', (WidgetTester tester) async {
+  testWidgets('muestra pantalla de login', (WidgetTester tester) async {
     await tester.pumpWidget(const FollowingPracticesApp());
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text('Seguimiento de Prácticas'), findsOneWidget);
-
-    await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-    });
-    await tester.pump();
-
-    expect(find.text('Sin práctica activa.'), findsOneWidget);
+    expect(find.text('Iniciar sesión'), findsOneWidget);
+    expect(find.text('Demo: estudiante@demo.com / 123456'), findsOneWidget);
   });
 }

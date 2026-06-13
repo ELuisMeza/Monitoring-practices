@@ -107,4 +107,34 @@ class Actividad {
       orderBy: 'fecha DESC',
     );
   }
+
+  static Future<List<Actividad>> readByPracticaId(int practicaId) {
+    return readAll(
+      where: 'practica_id = ?',
+      whereArgs: [practicaId],
+      orderBy: 'fecha DESC, id DESC',
+    );
+  }
+
+  static Future<List<Actividad>> readPendientesByPracticaIds(
+    List<int> practicaIds,
+  ) async {
+    if (practicaIds.isEmpty) return [];
+    final placeholders = List.filled(practicaIds.length, '?').join(',');
+    return readAll(
+      where:
+          'practica_id IN ($placeholders) AND estado IN (?, ?)',
+      whereArgs: [...practicaIds, estadoRegistrado, estadoObservado],
+      orderBy: 'fecha DESC',
+    );
+  }
+
+  static Future<double> sumHorasByPracticaId(int practicaId) async {
+    final actividades = await readByPracticaId(practicaId);
+    var total = 0.0;
+    for (final a in actividades) {
+      total += a.horasCumplidas;
+    }
+    return total;
+  }
 }

@@ -5,6 +5,7 @@ import 'package:following_practices/back/entities/empresa.dart';
 import 'package:following_practices/back/entities/observacion.dart';
 import 'package:following_practices/back/entities/practica.dart';
 import 'package:following_practices/back/entities/usuario.dart';
+import 'package:following_practices/front/components/date_picker_field.dart';
 import 'package:following_practices/front/services/crud_test_service.dart';
 
 /// Pantalla de prueba CRUD para todas las tablas. Solo desarrollo.
@@ -188,6 +189,41 @@ class _CrudTestPageState extends State<CrudTestPage>
     );
   }
 
+  DateTime? _parseCtrlDate(String key) {
+    final text = _ctrl(key).text.trim();
+    if (text.isEmpty) return null;
+    return DateTime.tryParse(text);
+  }
+
+  Widget _dateField(
+    String key,
+    String label, {
+    bool optional = false,
+    String? minFromKey,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: DatePickerField(
+        controller: _ctrl(key),
+        labelText: label,
+        required: !optional,
+        clearable: optional,
+        minSelectableDate: minFromKey == null ? null : _parseCtrlDate(minFromKey),
+        beforePick: minFromKey == null
+            ? null
+            : () async {
+                if (_parseCtrlDate(minFromKey) != null) return true;
+                if (!mounted) return false;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Selecciona primero la fecha de inicio.')),
+                );
+                return false;
+              },
+        helpText: label,
+      ),
+    );
+  }
+
   Widget _btn(String label, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.only(right: 8, bottom: 8),
@@ -333,8 +369,8 @@ class _CrudTestPageState extends State<CrudTestPage>
       _field('p_emp', 'empresa_id'),
       _field('p_tut', 'tutor_id (opcional)'),
       _field('p_sup', 'supervisor_id (opcional)'),
-      _field('p_ini', 'fecha_inicio YYYY-MM-DD'),
-      _field('p_fin', 'fecha_fin (opcional)'),
+      _dateField('p_ini', 'fecha_inicio'),
+      _dateField('p_fin', 'fecha_fin (opcional)', optional: true, minFromKey: 'p_ini'),
       _field('p_horas', 'horas_requeridas'),
       _field('p_estado', 'estado (activa/completada/suspendida)'),
       Wrap(
@@ -400,7 +436,7 @@ class _CrudTestPageState extends State<CrudTestPage>
   Widget _tabActividades() {
     return _scroll([
       _field('a_prac', 'practica_id'),
-      _field('a_fecha', 'fecha YYYY-MM-DD'),
+      _dateField('a_fecha', 'fecha'),
       _field('a_desc', 'descripcion'),
       _field('a_horas', 'horas_cumplidas'),
       _field('a_est', 'estado (registrado/observado/aprobado/rechazado)'),
@@ -513,7 +549,7 @@ class _CrudTestPageState extends State<CrudTestPage>
     return _scroll([
       _field('s_prac', 'practica_id'),
       _field('s_emp', 'empresa_id'),
-      _field('s_fecha', 'fecha YYYY-MM-DD'),
+      _dateField('s_fecha', 'fecha'),
       _field('s_hora', 'hora HH:MM'),
       _field('s_tipo', 'tipo (entrada/salida)'),
       Wrap(

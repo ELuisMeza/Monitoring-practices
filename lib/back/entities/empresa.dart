@@ -89,4 +89,13 @@ class Empresa {
     }
     return EntityDatabase.deleteById(tableName, id!);
   }
+
+  static Future<Empresa?> readByQrToken(String qrToken) async {
+    final empresas = await readAll(
+      where: 'qr_token = ?',
+      whereArgs: [qrToken.trim()],
+      limit: 1,
+    );
+    return empresas.isEmpty ? null : empresas.first;
+  }
 }

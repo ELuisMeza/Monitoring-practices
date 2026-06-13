@@ -102,7 +102,6 @@ class Practica {
     return EntityDatabase.deleteById(tableName, id!);
   }
 
-  /// Práctica activa de un estudiante, o null si no tiene.
   static Future<Practica?> readActivaByEstudianteId(int estudianteId) async {
     final practicas = await readAll(
       where: 'estudiante_id = ? AND estado = ?',
@@ -110,5 +109,37 @@ class Practica {
       limit: 1,
     );
     return practicas.isEmpty ? null : practicas.first;
+  }
+
+  static Future<List<Practica>> readByTutorId(int tutorId) {
+    return readAll(
+      where: 'tutor_id = ? AND estado = ?',
+      whereArgs: [tutorId, estadoActiva],
+      orderBy: 'fecha_inicio DESC',
+    );
+  }
+
+  static Future<List<Practica>> readBySupervisorId(int supervisorId) {
+    return readAll(
+      where: 'supervisor_id = ? AND estado = ?',
+      whereArgs: [supervisorId, estadoActiva],
+      orderBy: 'fecha_inicio DESC',
+    );
+  }
+
+  static Future<List<Practica>> readActivasByEmpresaId(int empresaId) {
+    return readAll(
+      where: 'empresa_id = ? AND estado = ?',
+      whereArgs: [empresaId, estadoActiva],
+      orderBy: 'fecha_inicio DESC',
+    );
+  }
+
+  static Future<List<Practica>> readAllActivas() {
+    return readAll(
+      where: 'estado = ?',
+      whereArgs: [estadoActiva],
+      orderBy: 'fecha_inicio DESC',
+    );
   }
 }
