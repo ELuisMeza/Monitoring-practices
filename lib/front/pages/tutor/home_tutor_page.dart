@@ -19,6 +19,7 @@ class _HomeTutorPageState extends State<HomeTutorPage> {
   final _actividadService = ActividadService();
   final _alertaService = AlertaService();
   final _authService = AuthService();
+
   List<ActividadListItemDto> _pendientes = [];
   bool _cargando = true;
 
@@ -30,9 +31,18 @@ class _HomeTutorPageState extends State<HomeTutorPage> {
 
   Future<void> _cargar() async {
     final sesion = _authService.sesionActual;
+
     if (sesion == null) return;
-    final pendientes = await _actividadService.listarPendientesTutor(sesion.id);
-    await _alertaService.evaluarRevisor(sesion.id, pendientes.length);
+
+    final pendientes = await _actividadService.listarPendientesTutor(
+      sesion.id,
+    );
+
+    await _alertaService.evaluarRevisor(
+      sesion.id,
+      pendientes.length,
+    );
+
     setState(() {
       _pendientes = pendientes;
       _cargando = false;
@@ -41,12 +51,16 @@ class _HomeTutorPageState extends State<HomeTutorPage> {
 
   Future<void> _logout() async {
     await _authService.logout();
-    if (mounted) context.go('/login');
+
+    if (mounted) {
+      context.go('/login');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final sesion = _authService.sesionActual;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panel tutor'),
@@ -55,7 +69,10 @@ class _HomeTutorPageState extends State<HomeTutorPage> {
             icon: const Icon(Icons.notifications),
             onPressed: () => context.push('/alertas'),
           ),
-          IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+          ),
         ],
       ),
       body: _cargando
@@ -65,10 +82,14 @@ class _HomeTutorPageState extends State<HomeTutorPage> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  Text('Hola, ${sesion?.nombre ?? ''}',
-                      style: Theme.of(context).textTheme.titleLarge),
+                  Text(
+                    'Hola, ${sesion?.nombre ?? ''}',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                   const SizedBox(height: 8),
-                  Text('${_pendientes.length} actividad(es) pendiente(s)'),
+                  Text(
+                    '${_pendientes.length} actividad(es) pendiente(s)',
+                  ),
                   const SizedBox(height: 16),
                   FilledButton.icon(
                     onPressed: () => context.push('/tutor/revision'),
@@ -79,13 +100,16 @@ class _HomeTutorPageState extends State<HomeTutorPage> {
                   if (_pendientes.isEmpty)
                     const EmptyState(
                       icon: Icons.check_circle,
-                      mensaje: 'No hay actividades pendientes de revisión.',
+                      mensaje:
+                          'No hay actividades pendientes de revisión.',
                     )
                   else
                     ..._pendientes.take(5).map(
-                          (a) => ActividadCard(
-                            actividad: a,
-                            onTap: () => context.push('/revision/${a.id}'),
+                          (actividad) => ActividadCard(
+                            actividad: actividad,
+                            onTap: () => context.push(
+                              '/revision/${actividad.id}',
+                            ),
                           ),
                         ),
                 ],
