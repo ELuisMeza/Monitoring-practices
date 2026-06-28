@@ -19,6 +19,16 @@ Verificar instalación:
 flutter doctor
 flutter devices
 ```
+> Nota: Antes de ejecutar la aplicación por primera vez, asegúrese de ejecutar flutter pub get para instalar las dependencias del proyecto y dart run bin/migrate.dart para generar la base de datos local.
+
+### Verificación inicial
+
+Antes de ejecutar la aplicación por primera vez, se recomienda verificar que:
+
+- Las dependencias fueron instaladas correctamente con flutter pub get.
+- La base de datos local fue generada mediante dart run bin/migrate.dart.
+- Existe al menos un dispositivo disponible al ejecutar flutter devices.
+
 
 ---
 
