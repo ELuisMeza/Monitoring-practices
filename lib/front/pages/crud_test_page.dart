@@ -28,8 +28,7 @@ class _CrudTestPageState extends State<CrudTestPage>
   final _c = <String, TextEditingController>{};
 
   TextEditingController _ctrl(String key, [String? value]) {
-    final controller =
-        _c.putIfAbsent(key, () => TextEditingController());
+    final controller = _c.putIfAbsent(key, () => TextEditingController());
     if (value != null) controller.text = value;
     return controller;
   }
@@ -47,7 +46,8 @@ class _CrudTestPageState extends State<CrudTestPage>
       final applied = await _service.ensureSchema();
       setState(() {
         _ready = true;
-        _status = 'BD: $dbPath\n'
+        _status =
+            'BD: $dbPath\n'
             '${applied.isEmpty ? 'Esquema al día.' : 'Migraciones aplicadas: ${applied.join(', ')}'}';
       });
       await _reloadAll();
@@ -95,15 +95,15 @@ class _CrudTestPageState extends State<CrudTestPage>
       await action();
       await _reloadAll();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('OK')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('OK')));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -127,6 +127,8 @@ class _CrudTestPageState extends State<CrudTestPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
         title: const Text('CRUD prueba BD'),
         bottom: TabBar(
           controller: _tabs,
@@ -208,14 +210,18 @@ class _CrudTestPageState extends State<CrudTestPage>
         labelText: label,
         required: !optional,
         clearable: optional,
-        minSelectableDate: minFromKey == null ? null : _parseCtrlDate(minFromKey),
+        minSelectableDate: minFromKey == null
+            ? null
+            : _parseCtrlDate(minFromKey),
         beforePick: minFromKey == null
             ? null
             : () async {
                 if (_parseCtrlDate(minFromKey) != null) return true;
                 if (!mounted) return false;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Selecciona primero la fecha de inicio.')),
+                  const SnackBar(
+                    content: Text('Selecciona primero la fecha de inicio.'),
+                  ),
                 );
                 return false;
               },
@@ -260,17 +266,25 @@ class _CrudTestPageState extends State<CrudTestPage>
                   telefono: _opt(_ctrl('u_tel').text),
                 );
               } else {
-                await _service.updateUsuario(Usuario(
-                  id: _editUsuarioId,
-                  nombre: _ctrl('u_nombre').text,
-                  email: _ctrl('u_email').text,
-                  passwordHash: _ctrl('u_pass').text,
-                  rol: _ctrl('u_rol').text,
-                  telefono: _opt(_ctrl('u_tel').text),
-                ));
+                await _service.updateUsuario(
+                  Usuario(
+                    id: _editUsuarioId,
+                    nombre: _ctrl('u_nombre').text,
+                    email: _ctrl('u_email').text,
+                    passwordHash: _ctrl('u_pass').text,
+                    rol: _ctrl('u_rol').text,
+                    telefono: _opt(_ctrl('u_tel').text),
+                  ),
+                );
                 _editUsuarioId = null;
               }
-              _clearControllers(['u_nombre', 'u_email', 'u_pass', 'u_rol', 'u_tel']);
+              _clearControllers([
+                'u_nombre',
+                'u_email',
+                'u_pass',
+                'u_rol',
+                'u_tel',
+              ]);
             });
           }),
           if (_editUsuarioId != null)
@@ -278,22 +292,24 @@ class _CrudTestPageState extends State<CrudTestPage>
         ],
       ),
       _listHeader('Registros (${_usuarios.length})'),
-      ..._usuarios.map((u) => ListTile(
-            title: Text('#${u.id} ${u.nombre}'),
-            subtitle: Text('${u.email} · ${u.rol}'),
-            onTap: () => setState(() {
-              _editUsuarioId = u.id;
-              _ctrl('u_nombre', u.nombre);
-              _ctrl('u_email', u.email);
-              _ctrl('u_pass', u.passwordHash);
-              _ctrl('u_rol', u.rol);
-              _ctrl('u_tel', u.telefono ?? '');
-            }),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _run(() => _service.deleteUsuario(u.id!)),
-            ),
-          )),
+      ..._usuarios.map(
+        (u) => ListTile(
+          title: Text('#${u.id} ${u.nombre}'),
+          subtitle: Text('${u.email} · ${u.rol}'),
+          onTap: () => setState(() {
+            _editUsuarioId = u.id;
+            _ctrl('u_nombre', u.nombre);
+            _ctrl('u_email', u.email);
+            _ctrl('u_pass', u.passwordHash);
+            _ctrl('u_rol', u.rol);
+            _ctrl('u_tel', u.telefono ?? '');
+          }),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _run(() => _service.deleteUsuario(u.id!)),
+          ),
+        ),
+      ),
     ]);
   }
 
@@ -321,18 +337,27 @@ class _CrudTestPageState extends State<CrudTestPage>
                   contactoEmail: _opt(_ctrl('e_ce').text),
                 );
               } else {
-                await _service.updateEmpresa(Empresa(
-                  id: _editEmpresaId,
-                  nombre: _ctrl('e_nombre').text,
-                  qrToken: _ctrl('e_qr').text,
-                  ruc: _opt(_ctrl('e_ruc').text),
-                  direccion: _opt(_ctrl('e_dir').text),
-                  contactoNombre: _opt(_ctrl('e_cn').text),
-                  contactoEmail: _opt(_ctrl('e_ce').text),
-                ));
+                await _service.updateEmpresa(
+                  Empresa(
+                    id: _editEmpresaId,
+                    nombre: _ctrl('e_nombre').text,
+                    qrToken: _ctrl('e_qr').text,
+                    ruc: _opt(_ctrl('e_ruc').text),
+                    direccion: _opt(_ctrl('e_dir').text),
+                    contactoNombre: _opt(_ctrl('e_cn').text),
+                    contactoEmail: _opt(_ctrl('e_ce').text),
+                  ),
+                );
                 _editEmpresaId = null;
               }
-              _clearControllers(['e_nombre', 'e_qr', 'e_ruc', 'e_dir', 'e_cn', 'e_ce']);
+              _clearControllers([
+                'e_nombre',
+                'e_qr',
+                'e_ruc',
+                'e_dir',
+                'e_cn',
+                'e_ce',
+              ]);
             });
           }),
           if (_editEmpresaId != null)
@@ -340,23 +365,25 @@ class _CrudTestPageState extends State<CrudTestPage>
         ],
       ),
       _listHeader('Registros (${_empresas.length})'),
-      ..._empresas.map((e) => ListTile(
-            title: Text('#${e.id} ${e.nombre}'),
-            subtitle: Text('qr: ${e.qrToken}'),
-            onTap: () => setState(() {
-              _editEmpresaId = e.id;
-              _ctrl('e_nombre', e.nombre);
-              _ctrl('e_qr', e.qrToken);
-              _ctrl('e_ruc', e.ruc ?? '');
-              _ctrl('e_dir', e.direccion ?? '');
-              _ctrl('e_cn', e.contactoNombre ?? '');
-              _ctrl('e_ce', e.contactoEmail ?? '');
-            }),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _run(() => _service.deleteEmpresa(e.id!)),
-            ),
-          )),
+      ..._empresas.map(
+        (e) => ListTile(
+          title: Text('#${e.id} ${e.nombre}'),
+          subtitle: Text('qr: ${e.qrToken}'),
+          onTap: () => setState(() {
+            _editEmpresaId = e.id;
+            _ctrl('e_nombre', e.nombre);
+            _ctrl('e_qr', e.qrToken);
+            _ctrl('e_ruc', e.ruc ?? '');
+            _ctrl('e_dir', e.direccion ?? '');
+            _ctrl('e_cn', e.contactoNombre ?? '');
+            _ctrl('e_ce', e.contactoEmail ?? '');
+          }),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _run(() => _service.deleteEmpresa(e.id!)),
+          ),
+        ),
+      ),
     ]);
   }
 
@@ -364,13 +391,21 @@ class _CrudTestPageState extends State<CrudTestPage>
 
   Widget _tabPracticas() {
     return _scroll([
-      const Text('Crear usuario y empresa antes.', style: TextStyle(fontSize: 12)),
+      const Text(
+        'Crear usuario y empresa antes.',
+        style: TextStyle(fontSize: 12),
+      ),
       _field('p_est', 'estudiante_id'),
       _field('p_emp', 'empresa_id'),
       _field('p_tut', 'tutor_id (opcional)'),
       _field('p_sup', 'supervisor_id (opcional)'),
       _dateField('p_ini', 'fecha_inicio'),
-      _dateField('p_fin', 'fecha_fin (opcional)', optional: true, minFromKey: 'p_ini'),
+      _dateField(
+        'p_fin',
+        'fecha_fin (opcional)',
+        optional: true,
+        minFromKey: 'p_ini',
+      ),
       _field('p_horas', 'horas_requeridas'),
       _field('p_estado', 'estado (activa/completada/suspendida)'),
       Wrap(
@@ -389,17 +424,19 @@ class _CrudTestPageState extends State<CrudTestPage>
                   estado: _ctrl('p_estado').text,
                 );
               } else {
-                await _service.updatePractica(Practica(
-                  id: _editPracticaId,
-                  estudianteId: int.parse(_ctrl('p_est').text),
-                  empresaId: int.parse(_ctrl('p_emp').text),
-                  tutorId: _optInt(_ctrl('p_tut').text),
-                  supervisorId: _optInt(_ctrl('p_sup').text),
-                  fechaInicio: _ctrl('p_ini').text,
-                  fechaFin: _opt(_ctrl('p_fin').text),
-                  horasRequeridas: int.parse(_ctrl('p_horas').text),
-                  estado: _ctrl('p_estado').text,
-                ));
+                await _service.updatePractica(
+                  Practica(
+                    id: _editPracticaId,
+                    estudianteId: int.parse(_ctrl('p_est').text),
+                    empresaId: int.parse(_ctrl('p_emp').text),
+                    tutorId: _optInt(_ctrl('p_tut').text),
+                    supervisorId: _optInt(_ctrl('p_sup').text),
+                    fechaInicio: _ctrl('p_ini').text,
+                    fechaFin: _opt(_ctrl('p_fin').text),
+                    horasRequeridas: int.parse(_ctrl('p_horas').text),
+                    estado: _ctrl('p_estado').text,
+                  ),
+                );
                 _editPracticaId = null;
               }
             });
@@ -409,25 +446,27 @@ class _CrudTestPageState extends State<CrudTestPage>
         ],
       ),
       _listHeader('Registros (${_practicas.length})'),
-      ..._practicas.map((p) => ListTile(
-            title: Text('#${p.id} est:${p.estudianteId} emp:${p.empresaId}'),
-            subtitle: Text('${p.fechaInicio} · ${p.estado}'),
-            onTap: () => setState(() {
-              _editPracticaId = p.id;
-              _ctrl('p_est', '${p.estudianteId}');
-              _ctrl('p_emp', '${p.empresaId}');
-              _ctrl('p_tut', p.tutorId?.toString() ?? '');
-              _ctrl('p_sup', p.supervisorId?.toString() ?? '');
-              _ctrl('p_ini', p.fechaInicio);
-              _ctrl('p_fin', p.fechaFin ?? '');
-              _ctrl('p_horas', '${p.horasRequeridas}');
-              _ctrl('p_estado', p.estado);
-            }),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _run(() => _service.deletePractica(p.id!)),
-            ),
-          )),
+      ..._practicas.map(
+        (p) => ListTile(
+          title: Text('#${p.id} est:${p.estudianteId} emp:${p.empresaId}'),
+          subtitle: Text('${p.fechaInicio} · ${p.estado}'),
+          onTap: () => setState(() {
+            _editPracticaId = p.id;
+            _ctrl('p_est', '${p.estudianteId}');
+            _ctrl('p_emp', '${p.empresaId}');
+            _ctrl('p_tut', p.tutorId?.toString() ?? '');
+            _ctrl('p_sup', p.supervisorId?.toString() ?? '');
+            _ctrl('p_ini', p.fechaInicio);
+            _ctrl('p_fin', p.fechaFin ?? '');
+            _ctrl('p_horas', '${p.horasRequeridas}');
+            _ctrl('p_estado', p.estado);
+          }),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _run(() => _service.deletePractica(p.id!)),
+          ),
+        ),
+      ),
     ]);
   }
 
@@ -455,15 +494,17 @@ class _CrudTestPageState extends State<CrudTestPage>
                   evidenciaUrl: _opt(_ctrl('a_url').text),
                 );
               } else {
-                await _service.updateActividad(Actividad(
-                  id: _editActividadId,
-                  practicaId: int.parse(_ctrl('a_prac').text),
-                  fecha: _ctrl('a_fecha').text,
-                  descripcion: _ctrl('a_desc').text,
-                  horasCumplidas: double.parse(_ctrl('a_horas').text),
-                  estado: _ctrl('a_est').text,
-                  evidenciaUrl: _opt(_ctrl('a_url').text),
-                ));
+                await _service.updateActividad(
+                  Actividad(
+                    id: _editActividadId,
+                    practicaId: int.parse(_ctrl('a_prac').text),
+                    fecha: _ctrl('a_fecha').text,
+                    descripcion: _ctrl('a_desc').text,
+                    horasCumplidas: double.parse(_ctrl('a_horas').text),
+                    estado: _ctrl('a_est').text,
+                    evidenciaUrl: _opt(_ctrl('a_url').text),
+                  ),
+                );
                 _editActividadId = null;
               }
             });
@@ -473,23 +514,27 @@ class _CrudTestPageState extends State<CrudTestPage>
         ],
       ),
       _listHeader('Registros (${_actividades.length})'),
-      ..._actividades.map((a) => ListTile(
-            title: Text('#${a.id} practica:${a.practicaId}'),
-            subtitle: Text('${a.fecha} · ${a.horasCumplidas}h · ${a.descripcion}'),
-            onTap: () => setState(() {
-              _editActividadId = a.id;
-              _ctrl('a_prac', '${a.practicaId}');
-              _ctrl('a_fecha', a.fecha);
-              _ctrl('a_desc', a.descripcion);
-              _ctrl('a_horas', '${a.horasCumplidas}');
-              _ctrl('a_est', a.estado);
-              _ctrl('a_url', a.evidenciaUrl ?? '');
-            }),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _run(() => _service.deleteActividad(a.id!)),
-            ),
-          )),
+      ..._actividades.map(
+        (a) => ListTile(
+          title: Text('#${a.id} practica:${a.practicaId}'),
+          subtitle: Text(
+            '${a.fecha} · ${a.horasCumplidas}h · ${a.descripcion}',
+          ),
+          onTap: () => setState(() {
+            _editActividadId = a.id;
+            _ctrl('a_prac', '${a.practicaId}');
+            _ctrl('a_fecha', a.fecha);
+            _ctrl('a_desc', a.descripcion);
+            _ctrl('a_horas', '${a.horasCumplidas}');
+            _ctrl('a_est', a.estado);
+            _ctrl('a_url', a.evidenciaUrl ?? '');
+          }),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _run(() => _service.deleteActividad(a.id!)),
+          ),
+        ),
+      ),
     ]);
   }
 
@@ -511,12 +556,14 @@ class _CrudTestPageState extends State<CrudTestPage>
                   texto: _ctrl('o_txt').text,
                 );
               } else {
-                await _service.updateObservacion(Observacion(
-                  id: _editObservacionId,
-                  actividadId: int.parse(_ctrl('o_act').text),
-                  usuarioId: int.parse(_ctrl('o_user').text),
-                  texto: _ctrl('o_txt').text,
-                ));
+                await _service.updateObservacion(
+                  Observacion(
+                    id: _editObservacionId,
+                    actividadId: int.parse(_ctrl('o_act').text),
+                    usuarioId: int.parse(_ctrl('o_user').text),
+                    texto: _ctrl('o_txt').text,
+                  ),
+                );
                 _editObservacionId = null;
               }
             });
@@ -526,20 +573,22 @@ class _CrudTestPageState extends State<CrudTestPage>
         ],
       ),
       _listHeader('Registros (${_observaciones.length})'),
-      ..._observaciones.map((o) => ListTile(
-            title: Text('#${o.id} act:${o.actividadId}'),
-            subtitle: Text(o.texto),
-            onTap: () => setState(() {
-              _editObservacionId = o.id;
-              _ctrl('o_act', '${o.actividadId}');
-              _ctrl('o_user', '${o.usuarioId}');
-              _ctrl('o_txt', o.texto);
-            }),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _run(() => _service.deleteObservacion(o.id!)),
-            ),
-          )),
+      ..._observaciones.map(
+        (o) => ListTile(
+          title: Text('#${o.id} act:${o.actividadId}'),
+          subtitle: Text(o.texto),
+          onTap: () => setState(() {
+            _editObservacionId = o.id;
+            _ctrl('o_act', '${o.actividadId}');
+            _ctrl('o_user', '${o.usuarioId}');
+            _ctrl('o_txt', o.texto);
+          }),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _run(() => _service.deleteObservacion(o.id!)),
+          ),
+        ),
+      ),
     ]);
   }
 
@@ -565,14 +614,16 @@ class _CrudTestPageState extends State<CrudTestPage>
                   tipo: _ctrl('s_tipo').text,
                 );
               } else {
-                await _service.updateAsistencia(Asistencia(
-                  id: _editAsistenciaId,
-                  practicaId: int.parse(_ctrl('s_prac').text),
-                  empresaId: int.parse(_ctrl('s_emp').text),
-                  fecha: _ctrl('s_fecha').text,
-                  hora: _ctrl('s_hora').text,
-                  tipo: _ctrl('s_tipo').text,
-                ));
+                await _service.updateAsistencia(
+                  Asistencia(
+                    id: _editAsistenciaId,
+                    practicaId: int.parse(_ctrl('s_prac').text),
+                    empresaId: int.parse(_ctrl('s_emp').text),
+                    fecha: _ctrl('s_fecha').text,
+                    hora: _ctrl('s_hora').text,
+                    tipo: _ctrl('s_tipo').text,
+                  ),
+                );
                 _editAsistenciaId = null;
               }
             });
@@ -582,30 +633,29 @@ class _CrudTestPageState extends State<CrudTestPage>
         ],
       ),
       _listHeader('Registros (${_asistencias.length})'),
-      ..._asistencias.map((s) => ListTile(
-            title: Text('#${s.id} ${s.tipo}'),
-            subtitle: Text('practica:${s.practicaId} · ${s.fecha} ${s.hora}'),
-            onTap: () => setState(() {
-              _editAsistenciaId = s.id;
-              _ctrl('s_prac', '${s.practicaId}');
-              _ctrl('s_emp', '${s.empresaId}');
-              _ctrl('s_fecha', s.fecha);
-              _ctrl('s_hora', s.hora);
-              _ctrl('s_tipo', s.tipo);
-            }),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _run(() => _service.deleteAsistencia(s.id!)),
-            ),
-          )),
+      ..._asistencias.map(
+        (s) => ListTile(
+          title: Text('#${s.id} ${s.tipo}'),
+          subtitle: Text('practica:${s.practicaId} · ${s.fecha} ${s.hora}'),
+          onTap: () => setState(() {
+            _editAsistenciaId = s.id;
+            _ctrl('s_prac', '${s.practicaId}');
+            _ctrl('s_emp', '${s.empresaId}');
+            _ctrl('s_fecha', s.fecha);
+            _ctrl('s_hora', s.hora);
+            _ctrl('s_tipo', s.tipo);
+          }),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _run(() => _service.deleteAsistencia(s.id!)),
+          ),
+        ),
+      ),
     ]);
   }
 
   Widget _scroll(List<Widget> children) {
-    return ListView(
-      padding: const EdgeInsets.all(12),
-      children: children,
-    );
+    return ListView(padding: const EdgeInsets.all(12), children: children);
   }
 
   String? _opt(String v) => v.trim().isEmpty ? null : v.trim();
