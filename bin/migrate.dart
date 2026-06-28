@@ -17,7 +17,9 @@ Future<void> main(List<String> args) async {
   databaseFactory = databaseFactoryFfi;
 
   final customPath = _readPathArg(args);
-  final dbPath = DatabasePathCli.resolve(override: customPath);
+  final dbPath = DatabasePathCli.resolve(
+    override: customPath,
+  );
 
   stdout.writeln('Ejecutando migraciones en: $dbPath');
 
@@ -25,19 +27,26 @@ Future<void> main(List<String> args) async {
     dbPath,
     version: DatabaseConstants.dbVersion,
     onConfigure: (database) async {
-      await database.execute('PRAGMA foreign_keys = ON');
+      await database.execute(
+        'PRAGMA foreign_keys = ON',
+      );
     },
   );
 
   final applied = await MigrationRunner.run(db);
 
   if (applied.isEmpty) {
-    stdout.writeln('No hay migraciones pendientes. Esquema al día.');
+    stdout.writeln(
+      'No hay migraciones pendientes. Esquema al día.',
+    );
   } else {
-    stdout.writeln('Migraciones aplicadas: ${applied.join(', ')}');
+    stdout.writeln(
+      'Migraciones aplicadas: ${applied.join(', ')}',
+    );
   }
 
   await db.close();
+
   stdout.writeln('Migración completada.');
 }
 
@@ -47,5 +56,6 @@ String? _readPathArg(List<String> args) {
       return args[i + 1];
     }
   }
+
   return null;
 }
