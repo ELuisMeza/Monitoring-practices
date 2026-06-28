@@ -408,5 +408,5 @@ La migración **005** asigna `empresa_id` a supervisores existentes. El supervis
 ## Recursos Flutter
 
 - [Documentación Flutter](https://docs.flutter.dev/)
-- [sqflite](https://pub.dev/packages/sqflite)
- 
+- [sqflite](https://pub.dev/packages/sqflite) 
+  " " 
