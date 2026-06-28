@@ -12,18 +12,32 @@ import 'package:path_provider/path_provider.dart';
 class DatabasePath {
   DatabasePath._();
 
-  static Future<String> resolve({String? override}) async {
-    if (override != null && override.isNotEmpty) return override;
+  static Future<String> resolve({
+    String? override,
+  }) async {
+    if (override != null && override.isNotEmpty) {
+      return override;
+    }
 
     const fromEnv = String.fromEnvironment('DB_PATH');
-    if (fromEnv.isNotEmpty) return fromEnv;
 
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      final projectPath = DatabasePathCore.resolveProjectDatabasePath();
-      if (projectPath != null) return projectPath;
+    if (fromEnv.isNotEmpty) {
+      return fromEnv;
+    }
+
+    if (Platform.isWindows ||
+        Platform.isLinux ||
+        Platform.isMacOS) {
+      final projectPath =
+          DatabasePathCore.resolveProjectDatabasePath();
+
+      if (projectPath != null) {
+        return projectPath;
+      }
     }
 
     final base = await _mobileBaseDirectory();
+
     return DatabasePathCore.buildPath(base.path);
   }
 
@@ -31,6 +45,7 @@ class DatabasePath {
     if (Platform.isAndroid || Platform.isIOS) {
       return getApplicationDocumentsDirectory();
     }
+
     return getApplicationSupportDirectory();
   }
 }

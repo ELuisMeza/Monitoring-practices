@@ -11,11 +11,17 @@ class Migration002AlertasHistorial extends Migration {
   String get name => 'alertas_historial';
 
   @override
-  Future<void> up(DatabaseExecutor db) async {
+  Future<void> up(
+    DatabaseExecutor db,
+  ) async {
     final batch = db.batch();
+
     for (final statement in Migration002Schema.statements) {
       batch.execute(statement);
     }
-    await batch.commit(noResult: true);
+
+    await batch.commit(
+      noResult: true,
+    );
   }
 }

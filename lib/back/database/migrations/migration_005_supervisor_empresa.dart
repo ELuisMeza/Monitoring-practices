@@ -10,8 +10,14 @@ class Migration005SupervisorEmpresa extends Migration {
   String get name => 'supervisor_empresa';
 
   @override
-  Future<void> up(DatabaseExecutor db) async {
-    await db.execute('ALTER TABLE usuarios ADD COLUMN empresa_id INTEGER REFERENCES empresas(id)');
+  Future<void> up(
+    DatabaseExecutor db,
+  ) async {
+    await db.execute(
+      'ALTER TABLE usuarios '
+      'ADD COLUMN empresa_id INTEGER '
+      'REFERENCES empresas(id)',
+    );
 
     // Backfill: supervisor demo → empresa demo por QR token.
     final empresaRows = await db.query(
@@ -20,11 +26,15 @@ class Migration005SupervisorEmpresa extends Migration {
       whereArgs: ['DEMO-QR-TECH-001'],
       limit: 1,
     );
+
     if (empresaRows.isNotEmpty) {
       final empresaId = empresaRows.first['id'] as int;
+
       await db.update(
         'usuarios',
-        {'empresa_id': empresaId},
+        {
+          'empresa_id': empresaId,
+        },
         where: 'email = ?',
         whereArgs: ['supervisor@demo.com'],
       );
@@ -39,6 +49,7 @@ class Migration005SupervisorEmpresa extends Migration {
 
     for (final sup in supervisores) {
       final supId = sup['id'] as int;
+
       final practica = await db.query(
         'practicas',
         where: 'supervisor_id = ?',
@@ -46,10 +57,13 @@ class Migration005SupervisorEmpresa extends Migration {
         orderBy: 'id ASC',
         limit: 1,
       );
+
       if (practica.isNotEmpty) {
         await db.update(
           'usuarios',
-          {'empresa_id': practica.first['empresa_id']},
+          {
+            'empresa_id': practica.first['empresa_id'],
+          },
           where: 'id = ?',
           whereArgs: [supId],
         );

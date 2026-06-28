@@ -11,11 +11,17 @@ class Migration001Initial extends Migration {
   String get name => 'initial_schema';
 
   @override
-  Future<void> up(DatabaseExecutor db) async {
+  Future<void> up(
+    DatabaseExecutor db,
+  ) async {
     final batch = db.batch();
+
     for (final statement in InitialSchema.domainStatements) {
       batch.execute(statement);
     }
-    await batch.commit(noResult: true);
+
+    await batch.commit(
+      noResult: true,
+    );
   }
 }
