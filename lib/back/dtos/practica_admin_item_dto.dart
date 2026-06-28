@@ -17,16 +17,28 @@ class PracticaAdminItemDto {
   });
 
   final int id;
+
   final int estudianteId;
+
   final String estudianteNombre;
+
   final int empresaId;
+
   final String empresaNombre;
+
   final int? tutorId;
+
   final String? tutorNombre;
+
   final int? supervisorId;
+
   final String? supervisorNombre;
+
   final String fechaInicio;
+
   final String? fechaFin;
+
   final int horasRequeridas;
+
   final String estado;
 }

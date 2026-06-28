@@ -10,9 +10,14 @@ class ObservacionDto {
   });
 
   final int id;
+
   final int actividadId;
+
   final int usuarioId;
+
   final String autorNombre;
+
   final String texto;
+
   final String createdAt;
 }

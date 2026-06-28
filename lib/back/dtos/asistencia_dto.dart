@@ -11,10 +11,16 @@ class AsistenciaDto {
   });
 
   final int id;
+
   final int practicaId;
+
   final int empresaId;
+
   final String fecha;
+
   final String hora;
+
   final String tipo;
+
   final String? estudianteNombre;
 }

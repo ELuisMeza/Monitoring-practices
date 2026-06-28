@@ -15,17 +15,29 @@ class PracticaResumenDto {
   });
 
   final int practicaId;
+
   final int estudianteId;
+
   final int empresaId;
+
   final String empresaNombre;
+
   final String qrToken;
+
   final String fechaInicio;
+
   final String? fechaFin;
+
   final int horasRequeridas;
+
   final double horasAcumuladas;
+
   final String? tutorNombre;
+
   final String? supervisorNombre;
 
   double get porcentajeAvance =>
-      horasRequeridas > 0 ? (horasAcumuladas / horasRequeridas * 100) : 0;
+      horasRequeridas > 0
+          ? (horasAcumuladas / horasRequeridas * 100)
+          : 0;
 }

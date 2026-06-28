@@ -17,7 +17,15 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nombre        TEXT    NOT NULL,
     email         TEXT    UNIQUE NOT NULL,
     password_hash TEXT    NOT NULL,
-    rol           TEXT    NOT NULL CHECK(rol IN ('estudiante','tutor','supervisor','coordinador')),
+    rol           TEXT    NOT NULL
+                          CHECK(
+                            rol IN (
+                              'estudiante',
+                              'tutor',
+                              'supervisor',
+                              'coordinador'
+                            )
+                          ),
     telefono      TEXT,
     created_at    TEXT    DEFAULT (datetime('now'))
 );
@@ -47,7 +55,13 @@ CREATE TABLE IF NOT EXISTS practicas (
     fecha_fin        TEXT,
     horas_requeridas INTEGER NOT NULL DEFAULT 240,
     estado           TEXT DEFAULT 'activa'
-                           CHECK(estado IN ('activa','completada','suspendida')),
+                           CHECK(
+                             estado IN (
+                               'activa',
+                               'completada',
+                               'suspendida'
+                             )
+                           ),
     created_at       TEXT DEFAULT (datetime('now'))
 );
 ''';
@@ -58,10 +72,18 @@ CREATE TABLE IF NOT EXISTS actividades (
     practica_id     INTEGER NOT NULL REFERENCES practicas(id),
     fecha           TEXT    NOT NULL,
     descripcion     TEXT    NOT NULL,
-    horas_cumplidas REAL    NOT NULL CHECK(horas_cumplidas > 0),
+    horas_cumplidas REAL    NOT NULL
+                            CHECK(horas_cumplidas > 0),
     evidencia_url   TEXT,
     estado          TEXT DEFAULT 'registrado'
-                          CHECK(estado IN ('registrado','observado','aprobado','rechazado')),
+                          CHECK(
+                            estado IN (
+                              'registrado',
+                              'observado',
+                              'aprobado',
+                              'rechazado'
+                            )
+                          ),
     created_at      TEXT DEFAULT (datetime('now'))
 );
 ''';
@@ -83,7 +105,8 @@ CREATE TABLE IF NOT EXISTS asistencias (
     empresa_id  INTEGER NOT NULL REFERENCES empresas(id),
     fecha       TEXT    NOT NULL,
     hora        TEXT    NOT NULL,
-    tipo        TEXT    NOT NULL CHECK(tipo IN ('entrada','salida')),
+    tipo        TEXT    NOT NULL
+                         CHECK(tipo IN ('entrada', 'salida')),
     created_at  TEXT    DEFAULT (datetime('now'))
 );
 ''';

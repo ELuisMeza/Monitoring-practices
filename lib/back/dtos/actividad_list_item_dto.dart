@@ -10,9 +10,14 @@ class ActividadListItemDto {
   });
 
   final int id;
+
   final String fecha;
+
   final String descripcion;
+
   final double horasCumplidas;
+
   final String estado;
+
   final String? estudianteNombre;
 }

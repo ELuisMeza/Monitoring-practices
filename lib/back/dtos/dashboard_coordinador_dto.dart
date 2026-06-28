@@ -9,9 +9,13 @@ class DashboardCoordinadorDto {
   });
 
   final int practicasActivas;
+
   final int totalEstudiantes;
+
   final double totalHorasAcumuladas;
+
   final int actividadesPendientes;
+
   final List<PracticaDashboardItemDto> practicas;
 }
 
@@ -27,10 +31,16 @@ class PracticaDashboardItemDto {
   });
 
   final int practicaId;
+
   final String estudianteNombre;
+
   final String empresaNombre;
+
   final double horasAcumuladas;
+
   final int horasRequeridas;
+
   final String estado;
+
   final int actividadesPendientes;
 }

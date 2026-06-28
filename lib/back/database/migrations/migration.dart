@@ -6,5 +6,7 @@ abstract class Migration {
 
   String get name;
 
-  Future<void> up(DatabaseExecutor db);
+  Future<void> up(
+    DatabaseExecutor db,
+  );
 }
