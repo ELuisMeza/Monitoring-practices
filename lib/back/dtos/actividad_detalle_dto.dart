@@ -15,12 +15,20 @@ class ActividadDetalleDto {
   });
 
   final int id;
+
   final int practicaId;
+
   final String fecha;
+
   final String descripcion;
+
   final double horasCumplidas;
+
   final String? evidenciaUrl;
+
   final String estado;
+
   final List<ObservacionDto> observaciones;
+
   final String? estudianteNombre;
 }

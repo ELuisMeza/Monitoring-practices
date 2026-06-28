@@ -10,9 +10,14 @@ class EmpresaListItemDto {
   });
 
   final int id;
+
   final String nombre;
+
   final String? ruc;
+
   final String? direccion;
+
   final String qrToken;
+
   final int practicasActivas;
 }

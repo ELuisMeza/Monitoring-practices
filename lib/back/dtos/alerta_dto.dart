@@ -11,10 +11,16 @@ class AlertaDto {
   });
 
   final int id;
+
   final int usuarioId;
+
   final String tipo;
+
   final String titulo;
+
   final String mensaje;
+
   final bool leida;
+
   final String createdAt;
 }
