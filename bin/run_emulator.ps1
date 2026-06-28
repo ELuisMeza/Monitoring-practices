@@ -24,24 +24,32 @@ $adb = Join-Path $env:LOCALAPPDATA "Android\Sdk\platform-tools\adb.exe"
 
 if (-not $Device) {
     $emulators = @()
+
     if (Test-Path $adb) {
         $emulators = @(
-            & $adb devices | ForEach-Object {
-                if ($_ -match '^(emulator-\d+)\s+device\b') {
-                    $matches[1]
-                }
-            } | Where-Object { $_ }
+            & $adb devices |
+                ForEach-Object {
+                    if ($_ -match '^(emulator-\d+)\s+device\b') {
+                        $matches[1]
+                    }
+                } |
+                Where-Object { $_ }
         )
     }
 
     if ($emulators.Count -eq 1) {
         $Device = $emulators | Select-Object -First 1
         Write-Host ">> Emulador detectado: $Device"
-    } elseif ($emulators.Count -gt 1) {
+    }
+    elseif ($emulators.Count -gt 1) {
         Write-Host "Hay varios emuladores conectados:"
-        $emulators | ForEach-Object { Write-Host "  - $_" }
+        $emulators | ForEach-Object {
+            Write-Host "  - $_"
+        }
+
         throw "Indique cuál usar: .\bin\run_emulator.ps1 -Device emulator-5554"
-    } else {
+    }
+    else {
         $Device = "emulator-5554"
         Write-Host ">> Usando dispositivo por defecto: $Device"
     }
@@ -55,27 +63,44 @@ if (-not (Test-Path $localDb)) {
 }
 
 Write-Host ">> Enviando BD al emulador ($Device)..."
-& (Join-Path $PSScriptRoot "sync_db_emulator.ps1") push -Device $Device
+
+& (Join-Path $PSScriptRoot "sync_db_emulator.ps1") `
+    push `
+    -Device $Device
 
 Write-Host ">> Iniciando app en $Device (Ctrl+C para salir y sincronizar)..."
+
 try {
     flutter run -d $Device
 }
 finally {
     Write-Host ""
     Write-Host ">> Esperando emulador antes de guardar BD..."
+
     Start-Sleep -Seconds 3
+
     Write-Host ">> Guardando BD en el PC..."
+
     $pullOk = $false
+
     try {
-        & (Join-Path $PSScriptRoot "sync_db_emulator.ps1") pull -Device $Device
-        if ($LASTEXITCODE -eq 0) { $pullOk = $true }
-    } catch {
-        # pull puede fallar si el emulador se desconectó; ver mensaje manual abajo
+        & (Join-Path $PSScriptRoot "sync_db_emulator.ps1") `
+            pull `
+            -Device $Device
+
+        if ($LASTEXITCODE -eq 0) {
+            $pullOk = $true
+        }
     }
+    catch {
+        # pull puede fallar si el emulador se desconectó;
+        # ver mensaje manual abajo
+    }
+
     if ($pullOk) {
         Write-Host "Listo: data/following_practices.db actualizado."
-    } else {
+    }
+    else {
         Write-Warning "Pull automático falló. Con el emulador encendido ejecute:"
         Write-Warning "  .\bin\sync_db_emulator.ps1 pull -Device $Device"
     }
