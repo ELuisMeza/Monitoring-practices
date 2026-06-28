@@ -19,37 +19,57 @@ class MigrationRunner {
     Migration005SupervisorEmpresa(),
   ];
 
-  static Future<List<int>> run(Database db) async {
-    await db.execute(InitialSchemaMigrationsDDL.createTable);
+  static Future<List<int>> run(
+    Database db,
+  ) async {
+    await db.execute(
+      InitialSchemaMigrationsDDL.createTable,
+    );
 
     final appliedVersions = await _getAppliedVersions(db);
+
     final pending = _migrations
-        .where((migration) => !appliedVersions.contains(migration.version))
+        .where(
+          (migration) =>
+              !appliedVersions.contains(migration.version),
+        )
         .toList()
-      ..sort((a, b) => a.version.compareTo(b.version));
+      ..sort(
+        (a, b) => a.version.compareTo(b.version),
+      );
 
     final executed = <int>[];
 
     for (final migration in pending) {
       await db.transaction((txn) async {
         await migration.up(txn);
-        await txn.insert(DatabaseConstants.tableSchemaMigrations, {
-          'version': migration.version,
-          'name': migration.name,
-        });
+
+        await txn.insert(
+          DatabaseConstants.tableSchemaMigrations,
+          {
+            'version': migration.version,
+            'name': migration.name,
+          },
+        );
       });
+
       executed.add(migration.version);
     }
 
     return executed;
   }
 
-  static Future<Set<int>> _getAppliedVersions(Database db) async {
+  static Future<Set<int>> _getAppliedVersions(
+    Database db,
+  ) async {
     final rows = await db.query(
       DatabaseConstants.tableSchemaMigrations,
       columns: ['version'],
     );
-    return rows.map((row) => row['version'] as int).toSet();
+
+    return rows
+        .map((row) => row['version'] as int)
+        .toSet();
   }
 }
 
