@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario — Seguimiento de Prácticas</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #3730A3;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg-page: #ffffff;
+      --bg-alt: #f8fafc;
+      --accent: #0D9488;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @page {
+      size: A4;
+      margin: 2.5cm 2cm;
+    }
+
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.55;
+      color: var(--text);
+      background: #e2e8f0;
+    }
+
+    /* Páginas del documento */
+    .page {
+      background: var(--bg-page);
+      max-width: 21cm;
+      min-height: 29.7cm;
+      margin: 0 auto 24px;
+      padding: 2.5cm 2cm;
+      box-shadow: 0 4px 24px rgba(0,0,0,.12);
+      page-break-after: always;
+    }
+
+    .page:last-child { page-break-after: auto; }
+
+    /* Portada */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 24cm;
+      border: 2px solid var(--primary);
+      padding: 3cm 2cm;
+    }
+
+    .cover-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #4F46E5, #7C3AED);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: 32px;
+    }
+
+    .cover h1 {
+      font-size: 26pt;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .cover .subtitle {
+      font-size: 14pt;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+
+    .cover-meta {
+      margin-top: auto;
+      width: 100%;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      font-size: 10pt;
+      color: var(--text-muted);
+    }
+
+    .cover-meta table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cover-meta td { padding: 4px 0; text-align: left; }
+    .cover-meta td:last-child { text-align: right; }
+
+    /* Encabezados */
+    h1.doc-title {
+      font-size: 18pt;
+      color: var(--primary-dark);
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 13pt;
+      color: var(--primary);
+      margin: 28px 0 12px;
+      padding-left: 10px;
+      border-left: 4px solid var(--primary);
+    }
+
+    h3 {
+      font-size: 11pt;
+      color: var(--text);
+      margin: 18px 0 8px;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 10.5pt;
+      color: var(--text-muted);
+      margin: 14px 0 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    p { margin-bottom: 10px; text-align: justify; }
+
+    ul, ol { margin: 8px 0 12px 22px; }
+    li { margin-bottom: 4px; }
+
+    /* Tabla de contenido */
+    .toc { list-style: none; margin-left: 0; }
+    .toc li {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted var(--border);
+      padding: 6px 0;
+    }
+    .toc a { color: var(--text); text-decoration: none; }
+    .toc a:hover { color: var(--primary); }
+    .toc .num { color: var(--primary); font-weight: 600; margin-right: 8px; }
+
+    /* Tablas */
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 10pt;
+    }
+
+    table.data th {
+      background: var(--primary);
+      color: #fff;
+      text-align: left;
+      padding: 8px 10px;
+      font-weight: 600;
+    }
+
+    table.data td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    table.data tr:nth-child(even) td { background: var(--bg-alt); }
+
+    /* Cajas informativas */
+    .note, .warning, .tip {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 14px 0;
+      font-size: 10pt;
+    }
+
+    .note {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .warning {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+    }
+
+    .tip {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+    }
+
+    .note strong, .warning strong, .tip strong { display: block; margin-bottom: 4px; }
+
+    /* Badge de rol */
+    .role-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 9pt;
+      font-weight: 700;
+      color: #fff;
+      margin-right: 6px;
+    }
+
+    .role-estudiante { background: #4F46E5; }
+    .role-tutor { background: #0D9488; }
+    .role-supervisor { background: #F59E0B; }
+    .role-coordinador { background: #7C3AED; }
+
+    /* Flujo de pasos */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 36px;
+      margin-bottom: 10px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 9pt;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Pie de página */
+    .footer {
+      margin-top: 40px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 9pt;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Diagrama simple */
+    .flow {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 9.5pt;
+      line-height: 1.8;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { box-shadow: none; margin: 0; max-width: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== PORTADA ==================== -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-logo">🎓</div>
+    <h1>Manual de Usuario</h1>
+    <p class="subtitle">Aplicación móvil<br><strong>Seguimiento de Prácticas Preprofesionales</strong></p>
+    <p style="font-size:11pt; color:var(--text-muted); max-width:420px;">
+      Guía operativa para estudiantes, tutores, supervisores y coordinadores.
+      Describe funcionalidades, tareas habituales y pantallas disponibles por rol.
+    </p>
+    <div class="cover-meta">
+      <table>
+        <tr>
+          <td><strong>Versión del documento:</strong> 1.0</td>
+          <td><strong>Fecha:</strong> Junio 2026</td>
+        </tr>
+        <tr>
+          <td><strong>Plataforma:</strong> Flutter (Android / Windows)</td>
+          <td><strong>Organización:</strong> Certus</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ÍNDICE ==================== -->
+<div class="page">
+  <h1 class="doc-title">Índice de contenidos</h1>
+  <ol class="toc">
+    <li><span><span class="num">1.</span><a href="#intro">Introducción</a></span></li>
+    <li><span><span class="num">2.</span><a href="#acceso">Acceso al sistema</a></span></li>
+    <li><span><span class="num">3.</span><a href="#roles">Roles de usuario</a></span></li>
+    <li><span><span class="num">4.</span><a href="#estudiante">Rol: Estudiante</a></span></li>
+    <li><span><span class="num">5.</span><a href="#tutor">Rol: Tutor</a></span></li>
+    <li><span><span class="num">6.</span><a href="#supervisor">Rol: Supervisor</a></span></li>
+    <li><span><span class="num">7.</span><a href="#coordinador">Rol: Coordinador</a></span></li>
+    <li><span><span class="num">8.</span><a href="#alertas">Alertas (todos los roles)</a></span></li>
+    <li><span><span class="num">9.</span><a href="#estados">Estados de actividad</a></span></li>
+    <li><span><span class="num">10.</span><a href="#demo">Cuentas de demostración</a></span></li>
+  </ol>
+
+  <h2 id="intro">1. Introducción</h2>
+  <p>
+    <strong>Seguimiento de Prácticas</strong> es una aplicación móvil diseñada para gestionar
+    el ciclo completo de las prácticas preprofesionales: registro de actividades diarias,
+    control de horas, asistencia mediante código QR, revisión por tutores y supervisores,
+    y administración centralizada por el coordinador académico.
+  </p>
+  <p>
+    La aplicación funciona de forma <strong>offline</strong> utilizando una base de datos SQLite
+    local. Cada usuario accede según su rol y ve únicamente las pantallas y acciones
+    correspondientes a sus responsabilidades.
+  </p>
+
+  <div class="note">
+    <strong>Objetivo del manual</strong>
+    Este documento orienta al usuario final en el uso cotidiano de la aplicación:
+    qué puede hacer cada rol, qué tareas debe realizar y qué pantallas utilizar para cada acción.
+  </div>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas</span>
+    <span>Página 2</span>
+  </div>
+</div>
+
+<!-- ==================== ACCESO Y ROLES ==================== -->
+<div class="page">
+  <h1 class="doc-title" id="acceso">2. Acceso al sistema</h1>
+
+  <h3>2.1 Inicio de sesión</h3>
+  <ol class="steps">
+    <li>Abrir la aplicación. Se muestra brevemente la pantalla de carga (splash).</li>
+    <li>En la pantalla <em>Iniciar sesión</em>, ingresar correo electrónico y contraseña.</li>
+    <li>Pulsar <strong>Iniciar sesión</strong>.</li>
+    <li>El sistema redirige automáticamente al panel principal según el rol del usuario.</li>
+  </ol>
+
+  <div class="warning">
+    <strong>Sesión</strong>
+    Si no hay sesión activa, cualquier pantalla protegida redirige al login.
+    Use el icono de cerrar sesión (⎋) en la esquina superior derecha para salir de forma segura.
+  </div>
+
+  <h3>2.2 Elementos comunes de la interfaz</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Elemento</th><th>Ubicación</th><th>Función</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Encabezado con gradiente</td>
+        <td>Parte superior del panel principal</td>
+        <td>Muestra saludo personalizado, subtítulo contextual y accesos rápidos</td>
+      </tr>
+      <tr>
+        <td>Icono de campana 🔔</td>
+        <td>Barra superior derecha</td>
+        <td>Abre la pantalla de <strong>Alertas</strong></td>
+      </tr>
+      <tr>
+        <td>Icono de salida</td>
+        <td>Barra superior derecha</td>
+        <td>Cierra la sesión y vuelve al login</td>
+      </tr>
+      <tr>
+        <td>Deslizar hacia abajo</td>
+        <td>Listas y paneles</td>
+        <td>Actualiza (refresh) la información mostrada</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1 class="doc-title" id="roles" style="margin-top:32px;">3. Roles de usuario</h1>
+  <p>La aplicación define cuatro roles con permisos diferenciados:</p>
+
+  <table class="data">
+    <thead>
+      <tr>
+        <th>Rol</th>
+        <th>Descripción</th>
+        <th>Alcance principal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="role-badge role-estudiante">Estudiante</span></td>
+        <td>Practicante en una empresa</td>
+        <td>Registrar actividades, asistencia QR, consultar progreso de horas</td>
+      </tr>
+      <tr>
+        <td><span class="role-badge role-tutor">Tutor</span></td>
+        <td>Docente asignado al practicante</td>
+        <td>Revisar y aprobar/rechazar actividades de sus estudiantes asignados</td>
+      </tr>
+      <tr>
+        <td><span class="role-badge role-supervisor">Supervisor</span></td>
+        <td>Responsable en la empresa de práctica</td>
+        <td>Validar actividades y consultar asistencias de la empresa</td>
+      </tr>
+      <tr>
+        <td><span class="role-badge role-coordinador">Coordinador</span></td>
+        <td>Administrador académico</td>
+        <td>Dashboard global, gestión de usuarios, empresas y prácticas</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="flow">Estudiante ──registra actividad──▶ Tutor / Supervisor ──revisan──▶ Coordinador
+       │                              │                              │
+       └── QR asistencia ────────────┴── ve asistencias del día ─────┴── administra todo</div>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas</span>
+    <span>Página 3</span>
+  </div>
+</div>
+
+<!-- ==================== ESTUDIANTE ==================== -->
+<div class="page">
+  <h1 class="doc-title" id="estudiante">
+    <span class="role-badge role-estudiante">Estudiante</span> 4. Rol: Estudiante
+  </h1>
+
+  <h3>4.1 Descripción del rol</h3>
+  <p>
+    El estudiante es el practicante vinculado a una práctica activa en una empresa.
+    Su responsabilidad principal es documentar diariamente las actividades realizadas,
+    registrar su asistencia mediante QR y hacer seguimiento al cumplimiento de horas requeridas.
+  </p>
+
+  <h3>4.2 Funcionalidades</h3>
+  <ul>
+    <li>Consultar progreso de horas acumuladas vs. horas requeridas.</li>
+    <li>Ver resumen de horas y actividades de la última semana.</li>
+    <li>Registrar nuevas actividades con fecha, descripción, horas y evidencia opcional.</li>
+    <li>Consultar historial completo de actividades y su estado de revisión.</li>
+    <li>Escanear código QR de la empresa para marcar entrada y salida.</li>
+    <li>Ver reporte semanal detallado.</li>
+    <li>Consultar perfil de la práctica activa (empresa, fechas, tutor, supervisor).</li>
+    <li>Recibir alertas automáticas (horas pendientes, actividades sin revisar, etc.).</li>
+  </ul>
+
+  <h3>4.3 Tareas habituales</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Tarea</th><th>Frecuencia</th><th>Pantalla</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Registrar actividad del día</td>
+        <td>Diaria</td>
+        <td>Mi práctica → Registrar actividad</td>
+      </tr>
+      <tr>
+        <td>Marcar entrada al centro de prácticas</td>
+        <td>Diaria (mañana)</td>
+        <td>Mi práctica → Asistencia QR</td>
+      </tr>
+      <tr>
+        <td>Marcar salida del centro de prácticas</td>
+        <td>Diaria (tarde)</td>
+        <td>Mi práctica → Asistencia QR</td>
+      </tr>
+      <tr>
+        <td>Revisar avance de horas</td>
+        <td>Semanal</td>
+        <td>Mi práctica (panel principal)</td>
+      </tr>
+      <tr>
+        <td>Consultar reporte semanal</td>
+        <td>Semanal</td>
+        <td>Mi práctica → Ver reporte</td>
+      </tr>
+      <tr>
+        <td>Corregir actividad rechazada u observada</td>
+        <td>Según necesidad</td>
+        <td>Historial → Detalle de actividad</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 Vistas y pantallas</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Pantalla</th><th>Ruta</th><th>Contenido</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Mi práctica</strong> (Inicio)</td>
+        <td>/estudiante</td>
+        <td>Saludo, empresa, barra de progreso de horas, resumen semanal, acciones rápidas</td>
+      </tr>
+      <tr>
+        <td><strong>Registrar actividad</strong></td>
+        <td>/estudiante/actividad/nueva</td>
+        <td>Formulario: fecha, descripción, horas cumplidas, URL de evidencia (opcional)</td>
+      </tr>
+      <tr>
+        <td><strong>Historial de actividades</strong></td>
+        <td>/estudiante/actividades</td>
+        <td>Lista de todas las actividades con estado (Registrado, Observado, Aprobado, Rechazado)</td>
+      </tr>
+      <tr>
+        <td><strong>Detalle de actividad</strong></td>
+        <td>/estudiante/actividad/:id</td>
+        <td>Información completa, observaciones del revisor; edición solo si estado = Registrado</td>
+      </tr>
+      <tr>
+        <td><strong>Asistencia QR</strong></td>
+        <td>/estudiante/qr</td>
+        <td>Escáner de código QR o ingreso manual del token; registra entrada o salida</td>
+      </tr>
+      <tr>
+        <td><strong>Reporte semanal</strong></td>
+        <td>/estudiante/reporte</td>
+        <td>Total de horas, cantidad de actividades y rango de fechas de la última semana</td>
+      </tr>
+      <tr>
+        <td><strong>Perfil de práctica</strong></td>
+        <td>/estudiante/perfil</td>
+        <td>Datos de la práctica activa: empresa, tutor, supervisor, fechas y horas</td>
+      </tr>
+      <tr>
+        <td><strong>Alertas</strong></td>
+        <td>/alertas</td>
+        <td>Notificaciones del sistema (compartida con todos los roles)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.5 Flujo: registrar una actividad</h3>
+  <ol class="steps">
+    <li>Ingresar a <strong>Mi práctica</strong>.</li>
+    <li>Pulsar <strong>Registrar actividad</strong>.</li>
+    <li>Completar fecha, descripción y horas cumplidas (obligatorios).</li>
+    <li>Opcionalmente agregar URL de evidencia (documento, foto, enlace).</li>
+    <li>Pulsar guardar. La actividad queda en estado <em>Registrado</em> y queda pendiente de revisión.</li>
+  </ol>
+
+  <div class="tip">
+    <strong>Regla importante</strong>
+    Solo las actividades en estado <em>Registrado</em> pueden ser editadas o eliminadas por el estudiante.
+    Una vez revisadas, el estudiante debe contactar al tutor si necesita correcciones.
+  </div>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas</span>
+    <span>Página 4</span>
+  </div>
+</div>
+
+<!-- ==================== ESTUDIANTE QR + TUTOR ==================== -->
+<div class="page">
+  <h3>4.6 Flujo: registrar asistencia con QR</h3>
+  <ol class="steps">
+    <li>Ingresar a <strong>Asistencia QR</strong>.</li>
+    <li>Escanear el código QR de la empresa o ingresar manualmente el token (ej. <code>DEMO-QR-TECH-001</code>).</li>
+    <li>El sistema valida que el estudiante tenga práctica activa en esa empresa.</li>
+    <li>Se registra automáticamente <strong>entrada</strong> o <strong>salida</strong> según la secuencia del día.</li>
+  </ol>
+
+  <div class="warning">
+    <strong>Reglas de asistencia</strong>
+    <ul style="margin-top:6px;">
+      <li>Secuencia obligatoria: Entrada → Salida (no se permite doble entrada ni salida sin entrada previa).</li>
+      <li>Solo una entrada y una salida por día por práctica.</li>
+      <li>El QR debe corresponder a la empresa donde el estudiante realiza su práctica.</li>
+    </ul>
+  </div>
+
+  <h1 class="doc-title" id="tutor" style="margin-top:28px;">
+    <span class="role-badge role-tutor">Tutor</span> 5. Rol: Tutor
+  </h1>
+
+  <h3>5.1 Descripción del rol</h3>
+  <p>
+    El tutor es el docente académico asignado a uno o más practicantes mediante el campo
+    <em>tutor_id</em> en la práctica. Su función es revisar las actividades registradas
+    por sus estudiantes y emitir un veredicto: observado, aprobado o rechazado, siempre
+    con un comentario obligatorio.
+  </p>
+
+  <h3>5.2 Funcionalidades</h3>
+  <ul>
+    <li>Ver cantidad de actividades pendientes de revisión.</li>
+    <li>Acceder a la cola completa de actividades por revisar.</li>
+    <li>Revisar detalle de cada actividad (descripción, horas, evidencia).</li>
+    <li>Cambiar estado de la actividad y registrar observación.</li>
+    <li>Consultar historial de observaciones previas en cada actividad.</li>
+    <li>Recibir alertas cuando hay actividades acumuladas sin revisar.</li>
+  </ul>
+
+  <h3>5.3 Tareas habituales</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Tarea</th><th>Frecuencia</th><th>Pantalla</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Revisar actividades pendientes</td>
+        <td>Diaria / semanal</td>
+        <td>Panel tutor → Revisar actividades</td>
+      </tr>
+      <tr>
+        <td>Aprobar actividad cumplida</td>
+        <td>Según registro del estudiante</td>
+        <td>Cola de revisión → Detalle → Aprobado</td>
+      </tr>
+      <tr>
+        <td>Observar o rechazar actividad deficiente</td>
+        <td>Según necesidad</td>
+        <td>Cola de revisión → Detalle → Observado / Rechazado</td>
+      </tr>
+      <tr>
+        <td>Consultar alertas del sistema</td>
+        <td>Opcional</td>
+        <td>Alertas (icono campana)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 Vistas y pantallas</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Pantalla</th><th>Ruta</th><th>Contenido</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Panel tutor</strong> (Inicio)</td>
+        <td>/tutor</td>
+        <td>Saludo, métricas de pendientes, acceso a revisión, últimas 5 actividades pendientes</td>
+      </tr>
+      <tr>
+        <td><strong>Revisar actividades</strong></td>
+        <td>/tutor/revision</td>
+        <td>Lista completa de actividades en estado Registrado de sus practicantes</td>
+      </tr>
+      <tr>
+        <td><strong>Detalle de revisión</strong></td>
+        <td>/revision/:id</td>
+        <td>Datos de la actividad, selector de nuevo estado, campo de observación, historial</td>
+      </tr>
+      <tr>
+        <td><strong>Alertas</strong></td>
+        <td>/alertas</td>
+        <td>Notificaciones (pendientes acumulados, etc.)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 Flujo: revisar una actividad</h3>
+  <ol class="steps">
+    <li>En el <strong>Panel tutor</strong>, pulsar <strong>Revisar actividades</strong>.</li>
+    <li>Seleccionar una actividad de la lista.</li>
+    <li>Leer descripción, fecha, horas y evidencia adjunta.</li>
+    <li>Elegir el nuevo estado: <em>Observado</em>, <em>Aprobado</em> o <em>Rechazado</em>.</li>
+    <li>Redactar la observación (campo obligatorio).</li>
+    <li>Pulsar <strong>Enviar revisión</strong>. El estudiante podrá ver el resultado en su historial.</li>
+  </ol>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas</span>
+    <span>Página 5</span>
+  </div>
+</div>
+
+<!-- ==================== SUPERVISOR ==================== -->
+<div class="page">
+  <h1 class="doc-title" id="supervisor">
+    <span class="role-badge role-supervisor">Supervisor</span> 6. Rol: Supervisor
+  </h1>
+
+  <h3>6.1 Descripción del rol</h3>
+  <p>
+    El supervisor es el responsable en la empresa donde se realiza la práctica.
+    Está vinculado a una empresa específica (<em>empresa_id</em>) y puede validar
+    actividades de <strong>todos los practicantes activos</strong> de esa empresa,
+    además de consultar las asistencias registradas el día de hoy.
+  </p>
+
+  <h3>6.2 Funcionalidades</h3>
+  <ul>
+    <li>Ver nombre de la empresa y cantidad de practicantes activos.</li>
+    <li>Consultar asistencias del día (entradas y salidas) de la empresa.</li>
+    <li>Validar actividades pendientes de todos los estudiantes de su empresa.</li>
+    <li>Emitir veredicto con observación (igual que el tutor).</li>
+    <li>Recibir alertas del sistema.</li>
+  </ul>
+
+  <h3>6.3 Tareas habituales</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Tarea</th><th>Frecuencia</th><th>Pantalla</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Verificar asistencias del día</td>
+        <td>Diaria</td>
+        <td>Panel supervisor → Asistencias de hoy</td>
+      </tr>
+      <tr>
+        <td>Validar actividades pendientes</td>
+        <td>Semanal</td>
+        <td>Panel supervisor → Validar actividades</td>
+      </tr>
+      <tr>
+        <td>Aprobar / observar / rechazar actividad</td>
+        <td>Según necesidad</td>
+        <td>Validación → Detalle de revisión</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>6.4 Vistas y pantallas</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Pantalla</th><th>Ruta</th><th>Contenido</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Panel supervisor</strong> (Inicio)</td>
+        <td>/supervisor</td>
+        <td>Saludo, empresa, practicantes activos, asistencias de hoy, acceso a validación</td>
+      </tr>
+      <tr>
+        <td><strong>Validar actividades</strong></td>
+        <td>/supervisor/validacion</td>
+        <td>Cola de actividades Registradas de practicantes de la empresa</td>
+      </tr>
+      <tr>
+        <td><strong>Detalle de revisión</strong></td>
+        <td>/revision/:id</td>
+        <td>Misma pantalla compartida con el tutor: estado, observación, historial</td>
+      </tr>
+      <tr>
+        <td><strong>Alertas</strong></td>
+        <td>/alertas</td>
+        <td>Notificaciones del sistema</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Diferencia Tutor vs. Supervisor</strong>
+    El <em>tutor</em> revisa actividades de estudiantes donde él está asignado como tutor académico.
+    El <em>supervisor</em> valida actividades de todos los estudiantes con práctica activa
+    en su empresa, independientemente del tutor asignado.
+  </div>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas</span>
+    <span>Página 6</span>
+  </div>
+</div>
+
+<!-- ==================== COORDINADOR ==================== -->
+<div class="page">
+  <h1 class="doc-title" id="coordinador">
+    <span class="role-badge role-coordinador">Coordinador</span> 7. Rol: Coordinador
+  </h1>
+
+  <h3>7.1 Descripción del rol</h3>
+  <p>
+    El coordinador es el administrador académico con visión global del programa de prácticas.
+    Puede consultar métricas consolidadas, gestionar usuarios, empresas y prácticas,
+    y asignar tutores y supervisores a cada practicante.
+  </p>
+
+  <h3>7.2 Funcionalidades</h3>
+  <ul>
+    <li>Dashboard con métricas: prácticas activas, estudiantes, horas acumuladas, pendientes de revisión.</li>
+    <li>Filtrar y listar prácticas por estado (activa, completada, suspendida).</li>
+    <li>Ver avance individual de cada práctica activa (horas y actividades pendientes).</li>
+    <li>CRUD completo de usuarios (crear, editar, filtrar por rol).</li>
+    <li>CRUD completo de empresas (incluyendo token QR para asistencia).</li>
+    <li>CRUD completo de prácticas (asignar estudiante, empresa, tutor, supervisor, fechas y horas).</li>
+    <li>Consultar alertas del sistema.</li>
+  </ul>
+
+  <h3>7.3 Tareas habituales</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Tarea</th><th>Frecuencia</th><th>Pantalla</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Monitorear estado general del programa</td>
+        <td>Diaria / semanal</td>
+        <td>Coordinación de prácticas (dashboard)</td>
+      </tr>
+      <tr>
+        <td>Registrar nuevo estudiante o tutor</td>
+        <td>Al inicio de ciclo</td>
+        <td>Administración → Usuarios → Nuevo</td>
+      </tr>
+      <tr>
+        <td>Registrar empresa con código QR</td>
+        <td>Al convenir nueva empresa</td>
+        <td>Administración → Empresas → Nueva</td>
+      </tr>
+      <tr>
+        <td>Asignar práctica a estudiante</td>
+        <td>Al inicio de práctica</td>
+        <td>Administración → Prácticas → Nueva</td>
+      </tr>
+      <tr>
+        <td>Revisar prácticas con bajo avance</td>
+        <td>Semanal</td>
+        <td>Dashboard → Prácticas activas</td>
+      </tr>
+      <tr>
+        <td>Suspender o completar práctica</td>
+        <td>Según necesidad</td>
+        <td>Prácticas → Editar práctica</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>7.4 Vistas y pantallas</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Pantalla</th><th>Ruta</th><th>Contenido</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Coordinación de prácticas</strong> (Inicio)</td>
+        <td>/coordinador</td>
+        <td>Dashboard, filtro por estado, accesos de administración, listado de prácticas activas</td>
+      </tr>
+      <tr>
+        <td><strong>Lista de prácticas</strong></td>
+        <td>/coordinador/practicas</td>
+        <td>Vista operativa de todas las prácticas con filtros</td>
+      </tr>
+      <tr>
+        <td><strong>Usuarios</strong></td>
+        <td>/coordinador/usuarios</td>
+        <td>Listado con filtro por rol; acceso a crear/editar</td>
+      </tr>
+      <tr>
+        <td><strong>Nuevo / Editar usuario</strong></td>
+        <td>/coordinador/usuarios/nuevo<br>/coordinador/usuarios/:id</td>
+        <td>Formulario: nombre, email, contraseña, rol, teléfono; empresa obligatoria si rol = Supervisor</td>
+      </tr>
+      <tr>
+        <td><strong>Empresas</strong></td>
+        <td>/coordinador/empresas</td>
+        <td>Listado de empresas registradas</td>
+      </tr>
+      <tr>
+        <td><strong>Nueva / Editar empresa</strong></td>
+        <td>/coordinador/empresas/nueva<br>/coordinador/empresas/:id</td>
+        <td>Formulario: nombre, token QR, RUC, dirección, contacto</td>
+      </tr>
+      <tr>
+        <td><strong>Prácticas (admin)</strong></td>
+        <td>/coordinador/practicas-admin</td>
+        <td>Gestión completa de prácticas</td>
+      </tr>
+      <tr>
+        <td><strong>Nueva / Editar práctica</strong></td>
+        <td>/coordinador/practicas-admin/nueva<br>/coordinador/practicas-admin/:id</td>
+        <td>Asignación: estudiante, empresa, tutor, supervisor, fechas, horas requeridas, estado</td>
+      </tr>
+      <tr>
+        <td><strong>Alertas</strong></td>
+        <td>/alertas</td>
+        <td>Notificaciones del sistema</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>7.5 Flujo: crear una práctica nueva</h3>
+  <ol class="steps">
+    <li>Verificar que existan el estudiante, la empresa, el tutor y el supervisor en el sistema.</li>
+    <li>Ir a <strong>Administración → Prácticas → Nueva práctica</strong>.</li>
+    <li>Seleccionar estudiante, empresa, tutor y supervisor.</li>
+    <li>Definir fecha de inicio, fecha de fin y horas requeridas (ej. 240 h).</li>
+    <li>Establecer estado <em>activa</em> y guardar.</li>
+    <li>El estudiante verá su práctica al iniciar sesión en <strong>Mi práctica</strong>.</li>
+  </ol>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas</span>
+    <span>Página 7</span>
+  </div>
+</div>
+
+<!-- ==================== ALERTAS, ESTADOS, DEMO ==================== -->
+<div class="page">
+  <h1 class="doc-title" id="alertas">8. Alertas (todos los roles)</h1>
+  <p>
+    La pantalla de <strong>Alertas</strong> está disponible para todos los roles autenticados
+    mediante el icono de campana en la barra superior.
+  </p>
+
+  <h3>8.1 Funcionalidades</h3>
+  <ul>
+    <li>Ver lista de alertas generadas automáticamente por el sistema.</li>
+    <li>Diferenciar alertas leídas (gris) de no leídas (destacadas con indicador naranja).</li>
+    <li>Deslizar una alerta hacia la izquierda para marcarla como leída.</li>
+    <li>Actualizar la lista deslizando hacia abajo.</li>
+  </ul>
+
+  <h3>8.2 Tipos de alertas generadas</h3>
+  <table class="data">
+    <thead>
+      <tr><th>Rol</th><th>Ejemplos de alertas</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Estudiante</td>
+        <td>Horas insuficientes en la semana, práctica próxima a vencer, actividades sin registrar</td>
+      </tr>
+      <tr>
+        <td>Tutor / Supervisor</td>
+        <td>Actividades acumuladas sin revisar</td>
+      </tr>
+      <tr>
+        <td>Coordinador</td>
+        <td>Prácticas con bajo avance, actividades pendientes globales</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1 class="doc-title" id="estados" style="margin-top:28px;">9. Estados de actividad</h1>
+  <p>Todas las actividades registradas por el estudiante pasan por un ciclo de revisión:</p>
+
+  <table class="data">
+    <thead>
+      <tr><th>Estado</th><th>Significado</th><th>¿Quién lo asigna?</th><th>Transiciones posibles</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Registrado</strong></td>
+        <td>Actividad creada por el estudiante, pendiente de revisión</td>
+        <td>Sistema (al registrar)</td>
+        <td>→ Observado, Aprobado, Rechazado</td>
+      </tr>
+      <tr>
+        <td><strong>Observado</strong></td>
+        <td>Revisada con comentario; requiere atención del estudiante</td>
+        <td>Tutor / Supervisor</td>
+        <td>→ Aprobado, Rechazado</td>
+      </tr>
+      <tr>
+        <td><strong>Aprobado</strong></td>
+        <td>Actividad validada; horas cuentan para el total acumulado</td>
+        <td>Tutor / Supervisor</td>
+        <td>Estado final</td>
+      </tr>
+      <tr>
+        <td><strong>Rechazado</strong></td>
+        <td>Actividad no válida; el estudiante debe registrar una nueva</td>
+        <td>Tutor / Supervisor</td>
+        <td>Estado final</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="flow">Estudiante registra ──▶ REGISTRADO ──▶ Tutor/Supervisor revisa
+                              │                    │
+                              │         ┌──────────┼──────────┐
+                              │         ▼          ▼          ▼
+                              │    OBSERVADO   APROBADO   RECHAZADO
+                              │         │          │          │
+                              └─────────┴──────────┴──────────┘
+                                        (estados finales)</div>
+
+  <h1 class="doc-title" id="demo" style="margin-top:28px;">10. Cuentas de demostración</h1>
+  <p>Para pruebas y capacitación, el sistema incluye usuarios demo precargados:</p>
+
+  <table class="data">
+    <thead>
+      <tr><th>Usuario</th><th>Correo</th><th>Contraseña</th><th>Rol</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ana Estudiante</td>
+        <td>estudiante@demo.com</td>
+        <td>123456</td>
+        <td><span class="role-badge role-estudiante">Estudiante</span></td>
+      </tr>
+      <tr>
+        <td>Carlos Tutor</td>
+        <td>tutor@demo.com</td>
+        <td>123456</td>
+        <td><span class="role-badge role-tutor">Tutor</span></td>
+      </tr>
+      <tr>
+        <td>María Supervisor</td>
+        <td>supervisor@demo.com</td>
+        <td>123456</td>
+        <td><span class="role-badge role-supervisor">Supervisor</span></td>
+      </tr>
+      <tr>
+        <td>Luis Coordinador</td>
+        <td>coord@demo.com</td>
+        <td>123456</td>
+        <td><span class="role-badge role-coordinador">Coordinador</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Datos demo incluidos</strong>
+    Empresa: <em>Tech Solutions SAC</em> (QR: <code>DEMO-QR-TECH-001</code>).
+    Práctica activa de Ana Estudiante con Carlos Tutor y María Supervisor, 240 horas requeridas.
+  </div>
+
+  <div class="footer">
+    <span>Manual de Usuario — Seguimiento de Prácticas v1.0 — Certus</span>
+    <span>Página 8</span>
+  </div>
+</div>
+
+</body>
+</html>
