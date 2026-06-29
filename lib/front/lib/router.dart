@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:following_practices/front/components/loading_view.dart';
+import 'package:following_practices/front/lib/theme/app_colors.dart';
 import 'package:following_practices/front/pages/alertas_page.dart';
 import 'package:following_practices/front/pages/auth/login_page.dart';
 import 'package:following_practices/front/pages/coordinador/empresa_form_page.dart';
@@ -161,8 +163,31 @@ class _SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+        ),
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.school_rounded, size: 72, color: Colors.white),
+              SizedBox(height: 24),
+              Text(
+                'Seguimiento de Prácticas',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 32),
+              LoadingView(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

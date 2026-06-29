@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:following_practices/front/lib/theme/app_colors.dart';
 
 class EstadoBadge extends StatelessWidget {
   const EstadoBadge({super.key, required this.estado});
@@ -9,15 +10,19 @@ class EstadoBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (color, label) = _estilo(estado);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color),
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 12),
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w700,
+          fontSize: 11,
+          letterSpacing: 0.3,
+        ),
       ),
     );
   }
@@ -25,13 +30,13 @@ class EstadoBadge extends StatelessWidget {
   (Color, String) _estilo(String estado) {
     switch (estado) {
       case 'aprobado':
-        return (Colors.green, 'Aprobado');
+        return (AppColors.success, 'Aprobado');
       case 'rechazado':
-        return (Colors.red, 'Rechazado');
+        return (AppColors.error, 'Rechazado');
       case 'observado':
-        return (Colors.orange, 'Observado');
+        return (AppColors.warning, 'Observado');
       default:
-        return (Colors.blueGrey, 'Registrado');
+        return (AppColors.info, 'Registrado');
     }
   }
 }

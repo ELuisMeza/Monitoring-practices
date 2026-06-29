@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:following_practices/back/dtos/alerta_dto.dart';
+import 'package:following_practices/front/components/animated_fade_slide.dart';
 import 'package:following_practices/front/components/empty_state.dart';
 import 'package:following_practices/front/components/loading_view.dart';
+import 'package:following_practices/front/lib/theme/app_colors.dart';
 import 'package:following_practices/front/services/alerta_service.dart';
 import 'package:following_practices/front/services/auth_service.dart';
 
@@ -42,38 +44,93 @@ class _AlertasPageState extends State<AlertasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Alertas')),
+      appBar: AppBar(
+        title: const Text('Alertas'),
+        backgroundColor: AppColors.surfaceCard,
+      ),
       body: _cargando
           ? const LoadingView()
           : _alertas.isEmpty
               ? const EmptyState(
-                  icon: Icons.notifications_none,
+                  icon: Icons.notifications_none_outlined,
                   mensaje: 'No tienes alertas pendientes.',
                 )
               : RefreshIndicator(
                   onRefresh: _cargar,
+                  color: AppColors.primary,
                   child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
                     itemCount: _alertas.length,
                     itemBuilder: (context, index) {
                       final a = _alertas[index];
-                      return Dismissible(
-                        key: ValueKey(a.id),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (_) => _marcarLeida(a),
-                        background: Container(
-                          color: Colors.green,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 16),
-                          child: const Icon(Icons.check, color: Colors.white),
-                        ),
-                        child: ListTile(
-                          leading: Icon(
-                            a.leida ? Icons.notifications : Icons.notifications_active,
-                            color: a.leida ? Colors.grey : Colors.orange,
+                      return AnimatedFadeSlide(
+                        delay: Duration(milliseconds: 50 * index),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Dismissible(
+                            key: ValueKey(a.id),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (_) => _marcarLeida(a),
+                            background: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.success,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20),
+                              child: const Icon(Icons.check_rounded,
+                                  color: Colors.white, size: 28),
+                            ),
+                            child: Card(
+                              color: a.leida
+                                  ? AppColors.surfaceCard
+                                  : AppColors.primary.withValues(alpha: 0.04),
+                              child: ListTile(
+                                leading: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: (a.leida
+                                            ? AppColors.textMuted
+                                            : AppColors.warning)
+                                        .withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Icon(
+                                    a.leida
+                                        ? Icons.notifications_outlined
+                                        : Icons.notifications_active_outlined,
+                                    color: a.leida
+                                        ? AppColors.textMuted
+                                        : AppColors.warning,
+                                  ),
+                                ),
+                                title: Text(
+                                  a.titulo,
+                                  style: TextStyle(
+                                    fontWeight:
+                                        a.leida ? FontWeight.w500 : FontWeight.w700,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  a.mensaje,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(color: AppColors.textSecondary),
+                                ),
+                                trailing: a.leida
+                                    ? null
+                                    : Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.warning,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                              ),
+                            ),
                           ),
-                          title: Text(a.titulo),
-                          subtitle: Text(a.mensaje),
-                          trailing: a.leida ? null : const Icon(Icons.circle, size: 10, color: Colors.orange),
                         ),
                       );
                     },

@@ -10,6 +10,7 @@ class FollowingPracticesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Seguimiento de Prácticas',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: AppRouter.router,
     );
